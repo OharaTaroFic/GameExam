@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         // ‘ÌŒ±‡BF“Gagent‚Ì’ÇÕæ(destination)‚ğtarget‚Éİ’è‚µ‚æ‚¤I
-        
+        agent.destination = target.transform.position;
         animator.SetFloat("Speed", agent.velocity.magnitude);
     }
 }

@@ -40,7 +40,7 @@ public class Player : MonoBehaviour
         if (GameObject.FindGameObjectsWithTag("Dot").Length == 0)
         {
             // 体験②：シーン「Win」をロードしよう！
-            
+            SceneManager.LoadScene("Win");
         }
     }
 
@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
         if (other.tag == "Dot")
         {
             // 体験①：Dotを消そう(Destroy)
-
+            Destroy(other);
         }
 
         if (other.tag == "Enemy")
