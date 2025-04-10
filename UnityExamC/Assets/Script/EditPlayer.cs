@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Player : MonoBehaviour
+public class EditPlayer : MonoBehaviour
 {
     //パラメータ
     public float MoveSpeed = 5f;//移動速度

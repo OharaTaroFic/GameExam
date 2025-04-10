@@ -376,6 +376,30 @@ MonoBehaviour:
   RunAnim: {fileID: 9100000, guid: b5aeb409b333a754b8162afa6e691a3b, type: 2}
   WinAnim: {fileID: 9100000, guid: b27fad0a5150c834ca5777b708fd209f, type: 2}
   LoseAnim: {fileID: 9100000, guid: 844ffcc1a1a012a469547dfad21469f5, type: 2}
+--- !u!114 &1145841361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145841356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b980f6ad43bcc554ea5260c076b9c0e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1145841362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145841356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a87ba010496eb394b8d974dea858b800, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1684933223
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,7 +628,13 @@ PrefabInstance:
       addedObject: {fileID: 1145841358}
     - targetCorrespondingSourceObject: {fileID: 7832418358341281176, guid: c87c6c4213eaf92439ef08551774c732, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1145841361}
+    - targetCorrespondingSourceObject: {fileID: 7832418358341281176, guid: c87c6c4213eaf92439ef08551774c732, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1145841359}
+    - targetCorrespondingSourceObject: {fileID: 7832418358341281176, guid: c87c6c4213eaf92439ef08551774c732, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1145841362}
   m_SourcePrefab: {fileID: 100100000, guid: c87c6c4213eaf92439ef08551774c732, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
