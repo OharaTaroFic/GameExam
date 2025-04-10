@@ -5,43 +5,79 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 360f;
-
-    CharacterController characterController;
-    Animator animator;
+    //パラメータ
+    public float MoveSpeed = 5f;//移動速度
+    public float RotationSpeed = 360f;//回転速度 
+    enum State//State.
+    {
+        Idle,
+        Walk,
+        Run,
+        Win,
+        Lose
+    }
+    State _state;
+    //アニメーションコントローラー
+    public RuntimeAnimatorController IdleAnim;//待機アニメーション
+    public RuntimeAnimatorController WalkAnim;//歩行アニメーション
+    public RuntimeAnimatorController RunAnim;//走行アニメーション
+    public RuntimeAnimatorController WinAnim;//勝利時のアニメーション
+    public RuntimeAnimatorController LoseAnim;//敗北時のアニメーション
+    //コンポーネント
+    CharacterController _characterController;
+    Animator _animator;
 
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
-        animator = GetComponentInChildren<Animator>();
+        _characterController = GetComponent<CharacterController>();
+        _animator = GetComponentInChildren<Animator>();
+        _state = State.Idle;//初期状態をIdleにする
+        _animator.runtimeAnimatorController = IdleAnim;
     }
 
     // Update is called once per frame
     void Update()
     {
+        //入力値から移動ベクトルを作成
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if (direction.sqrMagnitude > 0.01f)
+        //作成した移動ベクトルの大きさで現在のステートを決める。
+        if (direction.sqrMagnitude < 0.01f) { _state = State.Idle; }
+        if (direction.sqrMagnitude > 0.01f) { _state = State.Walk; }
+        if (direction.sqrMagnitude > 0.98f) { _state = State.Run; }
+
+        //Stateに応じた処理
+        //アニメーションの切り替え
+        if (_state == State.Idle)//待機
         {
-            Vector3 forward = Vector3.Slerp(
-                transform.forward,
-                direction,
-                rotationSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));
+            //アニメーションをIdleにする
+            _animator.runtimeAnimatorController = IdleAnim;
+        }
+        else if(_state == State.Walk)//歩行
+        {
+            //アニメーションをWalkにする
+            _animator.runtimeAnimatorController = WalkAnim;
+           
+        }
+        else if (_state == State.Run)//走る
+        {
+            //アニメーションをWalkにする
+            _animator.runtimeAnimatorController = RunAnim;
+        }
+        //進行方向を向く
+        if(_state == State.Walk || _state == State.Run)//歩行か走るなら
+        {
+            //進行方向のベクトルを作成
+            Vector3 forward = Vector3.Slerp(transform.forward, direction, RotationSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));
+            //進行方向を向く
             transform.LookAt(transform.position + forward);
         }
 
-        characterController.Move(direction * moveSpeed * Time.deltaTime);
+        //移動方向に移動
+        _characterController.Move(direction * MoveSpeed * Time.deltaTime);
 
-        //animator.SetFloat("Speed", characterController.velocity.magnitude);
-
-        // ゲーム画面上のDotの数が0個になった時の処理
-        //if (GameObject.FindGameObjectsWithTag("Dot").Length == 0)
-        //{
-        //    // 体験②：シーン「Win」をロードしよう！
-        //    SceneManager.LoadScene("Win");
-        //}
+       
     }
 
     private void OnTriggerEnter(Collider other)
