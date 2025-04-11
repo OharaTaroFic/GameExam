@@ -6,16 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scene/Win.unity
-    guid: 378910d972402a042b8fffed670bb960
+    path: Assets/TitleScene.unity
+    guid: 4e1bfdd27533e0c4d9e1ca417c43287e
   - enabled: 1
-    path: Assets/Scene/Title.unity
-    guid: 23d1422c4e4c4d44ab4f4d78d3670ff6
+    path: Assets/GameScene.unity
+    guid: 1c9f9f50326be214096fc6110757628f
   - enabled: 1
-    path: Assets/Scene/Main.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/LoseScene.unity
+    guid: 787612384fb64b747a49bade7d7c5e9f
   - enabled: 1
-    path: Assets/Scene/Lose.unity
-    guid: b19b41e23685d124bb9c9a7dcec887c7
+    path: Assets/WinScene.unity
+    guid: c6d550227d53c31439cebec324f5d240
+  - enabled: 1
+    path: Assets/EditScene.unity
+    guid: d1a974cadd3f16c42ac883b13e561dc5
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

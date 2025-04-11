@@ -16,7 +16,7 @@ public class EditPlayer : MonoBehaviour
         Win,
         Lose
     }
-    State _state;
+    State _playerState;
     //アニメーションコントローラー
     public RuntimeAnimatorController IdleAnim;//待機アニメーション
     public RuntimeAnimatorController WalkAnim;//歩行アニメーション
@@ -32,7 +32,7 @@ public class EditPlayer : MonoBehaviour
     {
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
-        _state = State.Idle;//初期状態をIdleにする
+        _playerState = State.Idle;//初期状態をIdleにする
         _animator.runtimeAnimatorController = IdleAnim;
     }
 
@@ -43,30 +43,30 @@ public class EditPlayer : MonoBehaviour
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
         //作成した移動ベクトルの大きさで現在のステートを決める。
-        if (direction.sqrMagnitude < 0.01f) { _state = State.Idle; }
-        if (direction.sqrMagnitude > 0.01f) { _state = State.Walk; }
-        if (direction.sqrMagnitude > 0.98f) { _state = State.Run; }
+        if (direction.sqrMagnitude < 0.01f) { _playerState = State.Idle; }
+        if (direction.sqrMagnitude > 0.01f) { _playerState = State.Walk; }
+        if (direction.sqrMagnitude > 0.98f) { _playerState = State.Run; }
 
         //Stateに応じた処理
         //アニメーションの切り替え
-        if (_state == State.Idle)//待機
+        if (_playerState == State.Idle)//待機
         {
             //アニメーションをIdleにする
             _animator.runtimeAnimatorController = IdleAnim;
         }
-        else if(_state == State.Walk)//歩行
+        else if(_playerState == State.Walk)//歩行
         {
             //アニメーションをWalkにする
             _animator.runtimeAnimatorController = WalkAnim;
            
         }
-        else if (_state == State.Run)//走る
+        else if (_playerState == State.Run)//走る
         {
             //アニメーションをWalkにする
             _animator.runtimeAnimatorController = RunAnim;
         }
         //進行方向を向く
-        if(_state == State.Walk || _state == State.Run)//歩行か走るなら
+        if(_playerState == State.Walk || _playerState == State.Run)//歩行か走るなら
         {
             //進行方向のベクトルを作成
             Vector3 forward = Vector3.Slerp(transform.forward, direction, RotationSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));

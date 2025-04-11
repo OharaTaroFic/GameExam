@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject target;
+    GameObject target;
     NavMeshAgent agent;
     Animator animator;
 
@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
