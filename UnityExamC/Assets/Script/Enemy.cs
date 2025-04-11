@@ -8,11 +8,13 @@ public class Enemy : MonoBehaviour
     GameObject target;
     NavMeshAgent agent;
     Animator animator;
+    public float _speed = 10;
 
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.speed = _speed;
         animator = GetComponentInChildren<Animator>();
         target = GameObject.FindGameObjectWithTag("Player");
     }
