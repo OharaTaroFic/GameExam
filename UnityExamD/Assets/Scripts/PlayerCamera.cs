@@ -15,8 +15,8 @@ public class PlayerCamera : MonoBehaviour
     // 初めに回転する大きさ
     private const float START_ROT_ANGLE = 32.0f;
     // 初めに移動する大きさ
-    private readonly Vector3 START_ADD_POS = new Vector3(0, 8, -1.0f);
-    private readonly Vector3 START_MOVE_SIZE = new Vector3(0, -4.25f, -0.5f);
+    private readonly Vector3 START_ADD_POS = new Vector3(0, 6, -1.0f);
+    private readonly Vector3 START_MOVE_SIZE = new Vector3(0, -2.5f, -0.5f);
 
     // 必殺・ボス攻撃時のフレーム関係
     public static int MOVE_SP_BOSS_FRAME = 10;
@@ -162,10 +162,7 @@ public class PlayerCamera : MonoBehaviour
             return;
         }
 
-        transform.position = _player.transform.position + _addPos;
-
         int count = 0;
-
         // 画面をタップしている指の数を取得
         if (Touchscreen.current != null)
         {
@@ -191,6 +188,8 @@ public class PlayerCamera : MonoBehaviour
         }
 
         if (_isRot) RotCamera();
+
+        transform.position = _player.transform.position + _addPos;
     }
 
     public void OnNextStage()

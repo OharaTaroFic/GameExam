@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -54,7 +55,7 @@ public class Player : MonoBehaviour
 
 
     // 初めの演出時の移動速度
-    private const float START_MOVE_SPEED = 10.0f;
+    private const float START_MOVE_SPEED = 20.0f / START_INVAILD_NORMAL;
 
     // 引っ張りキャンセルの長さ割合
     private float CANCEL_LEN_RATE = 0.02f;
@@ -232,13 +233,6 @@ public class Player : MonoBehaviour
     {
         if (_sceneState != SceneState.GameScene) return;
 
-        if (_isStart)
-        {
-            transform.position += Vector3.forward * START_MOVE_SPEED * Time.deltaTime;
-            
-            return;
-        }
-
         if (_isUpdateSpAnim)
         {
             var time = _spAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
@@ -295,6 +289,7 @@ public class Player : MonoBehaviour
     {
         if (_isStart)
         {
+            transform.position += Vector3.forward * START_MOVE_SPEED;
             if (_invaildFrame < 0)
             {
                 _isStart = false;
@@ -342,8 +337,11 @@ public class Player : MonoBehaviour
         if (!_mgr.IsPlayerTurn) return;
         
         // 現時点での速度を保存
-        _preVel = _rigid.velocity;
-
+        if (_rigid.velocity.sqrMagnitude > 0.0f)
+        {
+            _preVel = _rigid.velocity;
+        }
+        
         if (_isMove)
         {
             if (_isShot)
@@ -451,7 +449,9 @@ public class Player : MonoBehaviour
                 }
 
                 _animator.runtimeAnimatorController = _animAttack;
-                _rigid.AddForce(vec * _moveSpeed, ForceMode.Impulse);
+                var force = vec * _moveSpeed;
+                _rigid.AddForce(force, ForceMode.Impulse);
+                _preVel = force / _rigid.mass;
                 _isShot = true;
                 _isMove = true;
             }
@@ -549,43 +549,78 @@ public class Player : MonoBehaviour
     {
         // ゲームシーン以外なら無視
         if (_sceneState != SceneState.GameScene) return;
-        // プレイヤーのターンでないなら無視
-        if (!_mgr.IsPlayerTurn) return;
-
         // 壁と当たったら反射
         if (collision.gameObject.tag == "Wall")
         {
-            Reflect(collision.contacts[0].normal);
+            Vector3 norm;
+            // Xの方が大きい：Right or Left
+            if (Mathf.Abs(_preVel.x) > Mathf.Abs(_preVel.z))
+            {
+                // 右に移動：Left法線
+                if (_preVel.x > 0)
+                {
+                    norm = Vector3.left;
+                }
+                // 左に移動：Right法線
+                else
+                {
+                    norm = Vector3.right;
+                }
+            }
+            // Zの方が大きい：Top or Bottom
+            else
+            {
+                // 上に移動：Bottom法線
+                if (_preVel.z > 0)
+                {
+                    norm = Vector3.back;
+                }
+                // 下に移動：Top法線
+                else
+                {
+                    norm = Vector3.forward;
+                }
+            }
+            Debug.Log(norm);
+            Reflect(norm);
         }
         // 敵と当たったらダメージ + 反射
         else if (collision.gameObject.tag == "Enemy")
         {
             collision.transform.GetComponent<Enemy>().OnDamage(_power);
             Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
-            Reflect(collision.contacts[0].normal);
+            var norm = collision.contacts[0].point - collision.transform.position;
+            norm.y = 0;
+            norm.Normalize();
+            Debug.Log(norm);
+            Reflect(norm);
         }
         // ボスと当たったらダメージ + 反射
         else if (collision.gameObject.tag == "Boss")
         {
             collision.transform.GetComponent<Boss>().OnDamage(_power);
             Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
-            Reflect(collision.contacts[0].normal);
+            var norm = collision.contacts[0].point - collision.transform.position;
+            norm.y = 0;
+            norm.Normalize();
+            Reflect(norm);
         }
     }
 
     /* その他メソッド */
     private void Reflect(Vector3 norm)
     {
-        // Y軸方向の成分を消す
-        norm.y = 0;
-        norm.Normalize();
-
         var newVel = Vector3.Reflect(_preVel, norm);
 
+        // 速度変更
         _rigid.velocity = newVel * REFLECTION_LOSS_RATE;
 
+        // オブジェクトの向きを更新
         var rot = Quaternion.FromToRotation(transform.forward, newVel);
         transform.rotation = rot * transform.rotation;
+
+        // ぶつかったままにならないように少しだけ離す
+        transform.position += norm * 0.25f;
     }
 
     public void OnDamage(int damage)

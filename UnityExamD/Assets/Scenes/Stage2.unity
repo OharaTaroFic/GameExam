@@ -4572,7 +4572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7303921481074490744, guid: 9d0e6832b4b83d840ba8a9dfebeb032c, type: 3}
       propertyPath: _power
-      value: 10000
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7303921481074490744, guid: 9d0e6832b4b83d840ba8a9dfebeb032c, type: 3}
       propertyPath: _attackSize
