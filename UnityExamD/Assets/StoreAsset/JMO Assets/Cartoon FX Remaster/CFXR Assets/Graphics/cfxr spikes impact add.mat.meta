@@ -1,16 +1,8 @@
 fileFormatVersion: 2
-guid: 04d0f020002082e4db140d8c0954e83e
+guid: 8a746f0a06209c646878071683cdd8d5
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
+  mainObjectFileID: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 109565
-  packageName: Cartoon FX Remaster Free
-  packageVersion: R 1.5.0
-  assetPath: Assets/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr spikes
-    impact add.mat
-  uploadId: 756876

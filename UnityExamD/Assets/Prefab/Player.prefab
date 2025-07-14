@@ -188,7 +188,7 @@ MonoBehaviour:
   _sword1Prefab: {fileID: 3783627064010854837, guid: f231f693d287ec64baa9addeb77441be, type: 3}
   _sword2Prefab: {fileID: 6902264930276287433, guid: 6ec76d179b8df1c47b98f61f0a307a04, type: 3}
   _arrowPrefab: {fileID: 4307165171990216172, guid: a392c1bf094c77b4a9337ecca06d4583, type: 3}
-  _hitEffectPrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  _hitEffectPrefab: {fileID: 6459493655273327280, guid: c73186ac62b85bd4fb9558770c1b59af, type: 3}
 --- !u!95 &9014038564868513725
 Animator:
   serializedVersion: 7
