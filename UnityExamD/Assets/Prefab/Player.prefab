@@ -14,11 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 65
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -176,7 +176,7 @@ MonoBehaviour:
   _maxHp: 1000
   _power: 50
   _spPower: 10000
-  _moveSpeed: 100
+  _moveSpeed: 20
   _spCost: 1
   _spKind: 0
   _animIdle: {fileID: 9100000, guid: be96ee4549eedd847bbbec32036ebccd, type: 2}
