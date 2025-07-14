@@ -175,8 +175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHp: 1000
   _power: 50
-  _spPower: 100
-  _moveSpeed: 30
+  _spPower: 10000
+  _moveSpeed: 100
   _spCost: 1
   _spKind: 0
   _animIdle: {fileID: 9100000, guid: be96ee4549eedd847bbbec32036ebccd, type: 2}

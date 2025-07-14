@@ -9,6 +9,7 @@ TagManager:
   - Boss
   - FxTemporaire
   - ClickBlock
+  - Ground
   layers:
   - Default
   - TransparentFX

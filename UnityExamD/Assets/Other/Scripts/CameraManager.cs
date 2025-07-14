@@ -54,7 +54,7 @@ public class CameraManager : MonoBehaviour
 
         if (_isMove) return;
 
-        if (_player.IsPush)
+        if (_player.IsCreateArrow)
         {
             if (_isPlayerView)
             {

@@ -91,6 +91,7 @@ public class PlayerCamera : MonoBehaviour
             return;
         }
 
+        if (_mgr.IsClear || _mgr.IsLose) return;
 
         if (_isRot)
         {

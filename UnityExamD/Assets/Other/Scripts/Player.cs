@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -126,7 +125,7 @@ public class Player : MonoBehaviour
     private float _cancelLen;
 
     public SceneState SceneState {  get { return _sceneState; } }
-    public bool IsPush { get { return _isPush; } }
+    public bool IsCreateArrow { get { return _isCreateArrow; } }
 
     private void Awake()
     {
@@ -337,7 +336,7 @@ public class Player : MonoBehaviour
         if (!_mgr.IsPlayerTurn) return;
         
         // 現時点での速度を保存
-        if (_rigid.velocity.sqrMagnitude > 0.0f)
+        if (_rigid.velocity.sqrMagnitude > 0.01f)
         {
             _preVel = _rigid.velocity;
         }
@@ -549,67 +548,32 @@ public class Player : MonoBehaviour
     {
         // ゲームシーン以外なら無視
         if (_sceneState != SceneState.GameScene) return;
-        // 壁と当たったら反射
-        if (collision.gameObject.tag == "Wall")
-        {
-            Vector3 norm;
-            // Xの方が大きい：Right or Left
-            if (Mathf.Abs(_preVel.x) > Mathf.Abs(_preVel.z))
-            {
-                // 右に移動：Left法線
-                if (_preVel.x > 0)
-                {
-                    norm = Vector3.left;
-                }
-                // 左に移動：Right法線
-                else
-                {
-                    norm = Vector3.right;
-                }
-            }
-            // Zの方が大きい：Top or Bottom
-            else
-            {
-                // 上に移動：Bottom法線
-                if (_preVel.z > 0)
-                {
-                    norm = Vector3.back;
-                }
-                // 下に移動：Top法線
-                else
-                {
-                    norm = Vector3.forward;
-                }
-            }
-            Debug.Log(norm);
-            Reflect(norm);
-        }
-        // 敵と当たったらダメージ + 反射
-        else if (collision.gameObject.tag == "Enemy")
+        // 床なら無視
+        if (collision.gameObject.tag == "Ground") return;
+
+        // 反射
+        Reflect(collision.contacts[0].normal);
+
+        // 敵と当たったらダメージを与える。
+        if (collision.gameObject.tag == "Enemy")
         {
             collision.transform.GetComponent<Enemy>().OnDamage(_power);
             Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
-            var norm = collision.contacts[0].point - collision.transform.position;
-            norm.y = 0;
-            norm.Normalize();
-            Debug.Log(norm);
-            Reflect(norm);
         }
-        // ボスと当たったらダメージ + 反射
+        // ボスと当たったらダメージを与える。
         else if (collision.gameObject.tag == "Boss")
         {
             collision.transform.GetComponent<Boss>().OnDamage(_power);
             Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
-            var norm = collision.contacts[0].point - collision.transform.position;
-            norm.y = 0;
-            norm.Normalize();
-            Reflect(norm);
         }
     }
 
     /* その他メソッド */
     private void Reflect(Vector3 norm)
     {
+        norm.y = 0;
+        norm.Normalize();
+
         var newVel = Vector3.Reflect(_preVel, norm);
 
         // 速度変更
@@ -620,7 +584,7 @@ public class Player : MonoBehaviour
         transform.rotation = rot * transform.rotation;
 
         // ぶつかったままにならないように少しだけ離す
-        transform.position += norm * 0.25f;
+        transform.position += norm * 0.5f;
     }
 
     public void OnDamage(int damage)

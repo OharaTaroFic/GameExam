@@ -299,6 +299,7 @@ public class GameDirector : MonoBehaviour
         }
         else
         {
+            _cameraMgr.StartMove();
             GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().OnNextStage();
             _frame = CHNAGE_NEXT_FRAME;
             _isNext = true;
