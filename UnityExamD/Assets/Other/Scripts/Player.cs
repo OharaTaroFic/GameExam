@@ -151,13 +151,28 @@ public class Player : MonoBehaviour
         // コンポーネントの取得
         _animator = GetComponent<Animator>();
         _rigid = GetComponent<Rigidbody>();
-        _fade = GameObject.Find("Fade").GetComponent<Fade>();
 
         // シーン別初期化処理
-        if (_sceneState == SceneState.TitleScene)
+        if (_sceneState == SceneState.EditScene)
+        {
+            Button bt;
+            bt = GameObject.Find("ButtonIdle").GetComponent<Button>();
+            bt.onClick.AddListener(OnClickIdleButton);
+            bt = GameObject.Find("ButtonMove").GetComponent<Button>();
+            bt.onClick.AddListener(OnClickMoveButton);
+            bt = GameObject.Find("ButtonAttack").GetComponent<Button>();
+            bt.onClick.AddListener(OnClickAttackButton);
+            bt = GameObject.Find("ButtonWin").GetComponent<Button>();
+            bt.onClick.AddListener(OnClickWinButton);
+            bt = GameObject.Find("ButtonLose").GetComponent<Button>();
+            bt.onClick.AddListener(OnClickLoseButton);
+        }
+        else if (_sceneState == SceneState.TitleScene)
         {
             // 初期化.
             _invaildFrame = TAP_INVAILD_TITLE;
+
+            _fade = GameObject.Find("Fade").GetComponent<Fade>();
         }
         else if (_sceneState == SceneState.GameScene)
         {
@@ -171,6 +186,7 @@ public class Player : MonoBehaviour
             _hpText = GameObject.Find("PlayerHpValue").GetComponent<Text>();
             _spAnimator = GameObject.Find("SpGauge").GetComponent<Animator>();
             _seSource = GameObject.Find("Se").GetComponent<AudioSource>();
+            _fade = GameObject.Find("Fade").GetComponent<Fade>();
 
             // オブジェクト取得.
             _playerCamera = GameObject.Find("PlayerCamera");
@@ -419,6 +435,7 @@ public class Player : MonoBehaviour
 
     public void OnTouch(InputAction.CallbackContext context)
     {
+        if (_sceneState == SceneState.EditScene) return;
         if (IsInvaildControl()) return;
 
         // 押したとき
@@ -470,6 +487,7 @@ public class Player : MonoBehaviour
 
     public void HoldTouch(InputAction.CallbackContext context)
     {
+        if (_sceneState == SceneState.EditScene) return;
         // 押している場所を保存
         _touchPos = context.ReadValue<Vector2>();
 
@@ -535,6 +553,7 @@ public class Player : MonoBehaviour
 
     public void OnNextScene(InputAction.CallbackContext context)
     {
+        if (_sceneState == SceneState.EditScene) return;
         if (_fade.IsNowFade) return;
         if (!context.started) return;
 
@@ -687,5 +706,28 @@ public class Player : MonoBehaviour
         if (!_mgr.IsPlayerTurn) return true;
 
         return false;
+    }
+
+    // Editor用関数
+    public RuntimeAnimatorController[] SaveAnimInfo()
+    {
+        RuntimeAnimatorController[] info = new RuntimeAnimatorController[5];
+
+        info[0] = _animIdle;
+        info[1] = _animMove;
+        info[2] = _animAttack;
+        info[3] = _animWin;
+        info[4] = _animLose;
+
+        return info;
+    }
+
+    public void ApplySavedAnimInfo(RuntimeAnimatorController[] info)
+    {
+        _animIdle = info[0];
+        _animMove = info[1];
+        _animAttack = info[2];
+        _animWin = info[3];
+        _animLose = info[4];
     }
 }

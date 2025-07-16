@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using System.Runtime.InteropServices;
 
 [InitializeOnLoad]
 public class PrefabEditor
 {
     static PrefabEditor()
     {
-        SceneView.duringSceneGui += OnSceneGUI;
+        SceneView.duringSceneGui += OnChangePlayerSetting;
+        EditorApplication.playModeStateChanged += OnSavePlayerAnimInfo;
     }
 
-    static void OnSceneGUI(SceneView sceneView)
+    static void OnChangePlayerSetting(SceneView sceneView)
     {
+        // Editシーンなら終了
+        var sceneName = EditorSceneManager.GetActiveScene().name;
+        if (sceneName == "EditScene") return;
+
         // GUIの描画開始
         Handles.BeginGUI();
 
@@ -42,5 +48,38 @@ public class PrefabEditor
         }
 
         Handles.EndGUI();
+    }
+
+    static private RuntimeAnimatorController[] _saveInfo;
+
+    static void OnSavePlayerAnimInfo(PlayModeStateChange state)
+    {
+        // Editシーンでないなら終了
+        var sceneName = EditorSceneManager.GetActiveScene().name;
+        if (sceneName != "EditScene") return;
+
+        // 再生を抜ける時
+        if (state == PlayModeStateChange.ExitingPlayMode)
+        {
+            // プレイヤーを探す
+            var player = GameObject.Find("Player");
+
+            // アニメーション情報を取得、保存
+            var info = player.GetComponent<Player>();
+            _saveInfo = info.SaveAnimInfo();
+        }
+        // Playモード終了後(Editに入った後)
+        else if (state == PlayModeStateChange.EnteredEditMode)
+        {
+            // プレイヤーを探す
+            var player = GameObject.Find("Player");
+
+            // 保存したアニメーションを適用
+            var info = player.GetComponent<Player>();
+            info.ApplySavedAnimInfo(_saveInfo);
+
+            // 保存する
+            PrefabUtility.ApplyPrefabInstance(player, InteractionMode.UserAction);
+        }
     }
 }
