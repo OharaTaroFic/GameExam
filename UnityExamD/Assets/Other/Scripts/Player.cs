@@ -625,6 +625,9 @@ public class Player : MonoBehaviour
 
         // オブジェクトの向きを更新
         var rot = Quaternion.FromToRotation(transform.forward, newVel);
+        rot.x = 0;
+        rot.z = 0;
+        rot.Normalize();
         transform.rotation = rot * transform.rotation;
 
         // ぶつかったままにならないように少しだけ離す

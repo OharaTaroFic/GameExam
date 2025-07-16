@@ -88,11 +88,19 @@ public class GameDirector : MonoBehaviour
             _enemyList.Add(data);
         }
 
+        _frame = START_DELAY_FRAME;
+        _animEffect.speed = 0;
+
         var sceneName = SceneManager.GetActiveScene().name;
         if (sceneName == "BossStage")
         {
             _boss = new BossData();
             _boss.obj = GameObject.Find("Boss");
+            if (_boss.obj == null)
+            {
+                OnClear();
+                return;
+            }
             _boss.script = _boss.obj.GetComponent<Boss>();
             _isBoss = true;
             _turnAnim.SetTrigger("OnBossEnter");
@@ -106,17 +114,17 @@ public class GameDirector : MonoBehaviour
             // 何も設置されていないときは強制的にクリアシーンへ
             if (_enemyList.Count <= 0)
             {
-                _isClear = true;
+                OnClear();
                 return;
             }
         }
-        
-        _frame = START_DELAY_FRAME;
-        _animEffect.speed = 0;
     }
 
     void FixedUpdate()
     {
+        if (_fade.IsNowFade) return;
+        if (_isClear || _isLose) return;
+
         if (_isStart)
         {
             --_frame;
@@ -134,9 +142,6 @@ public class GameDirector : MonoBehaviour
             }
             return;
         }
-
-        if (_fade.IsNowFade) return;
-        if (_isClear || _isLose) return;
 
         if (_isNext)
         {
