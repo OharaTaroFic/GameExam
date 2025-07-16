@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.iOS;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,15 +28,13 @@ public class Boss : MonoBehaviour
     private const int DIV_METEOR_FRAME = 12;
 
     // パラメータ
-    [Header("攻撃種類")]
-    [SerializeField] private BossAttackKind _attackKind;
     [Header("ステータス")]
     [SerializeField] private int _maxHp = 100;
     [SerializeField] private int _attackTurn = 3;
     [SerializeField] private int _power = 20;
     [SerializeField] private int _score = 100;
+    [SerializeField] private BossAttackKind _attackKind;
     // 攻撃プレハブ
-    [Space, Space, Space, Header("攻撃プレハブ")]
     [SerializeField] private GameObject _bloodLancePrefab;
     [SerializeField] private GameObject _meteorPrefab;
     [SerializeField] private GameObject _thunderPrefab;
@@ -46,8 +42,7 @@ public class Boss : MonoBehaviour
     private int _turn;
     private int _hp;
     // その他変数
-    [Header("演出用プレハブ")]
-    [SerializeField] private GameObject _deathPrebaf;
+    private GameObject _deathPrebaf;
     [Header("効果音")]
     [SerializeField] private AudioClip _damageSe;
 
@@ -71,6 +66,11 @@ public class Boss : MonoBehaviour
         _hpBar = GameObject.Find("BossHpBar").GetComponent<Slider>();
         _hpText = GameObject.Find("BossHpValue").GetComponent<Text>();
         _countText = GameObject.Find("BossCountText").GetComponent<Text>();
+
+        _bloodLancePrefab = (GameObject)Resources.Load("BossAttack/BloodLance");
+        _meteorPrefab     = (GameObject)Resources.Load("BossAttack/Meteor");
+        _thunderPrefab    = (GameObject)Resources.Load("BossAttack/Thunder");
+        _deathPrebaf      = (GameObject)Resources.Load("Death/BossDeath");
 
         _hp = _maxHp;
         _turn = _attackTurn;

@@ -1,4 +1,3 @@
-using UnityEditor.iOS;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -93,12 +92,11 @@ public class Player : MonoBehaviour
     private int _invaildFrame;
 
     // GameScene用変数
-    [Header("演出用プレハブ")]
-    [SerializeField] private GameObject _flashPrefab;
-    [SerializeField] private GameObject _sword1Prefab;
-    [SerializeField] private GameObject _sword2Prefab;
-    [SerializeField] private GameObject _arrowPrefab;
-    [SerializeField] private GameObject _hitEffectPrefab;
+    private GameObject _flashPrefab;
+    private GameObject _sword1Prefab;
+    private GameObject _sword2Prefab;
+    private GameObject _arrowPrefab;
+    private GameObject _hitEffectPrefab;
 
     [Header("効果音")]
     [SerializeField] private AudioClip _shotSe;
@@ -173,6 +171,8 @@ public class Player : MonoBehaviour
             _invaildFrame = TAP_INVAILD_TITLE;
 
             _fade = GameObject.Find("Fade").GetComponent<Fade>();
+
+            Load();
         }
         else if (_sceneState == SceneState.GameScene)
         {
@@ -190,6 +190,7 @@ public class Player : MonoBehaviour
 
             // オブジェクト取得.
             _playerCamera = GameObject.Find("PlayerCamera");
+            Load();
 
             // 必殺技の関数をボタンに追加.
             var sp = GameObject.Find("SpGauge").GetComponent<Button>();
@@ -238,6 +239,15 @@ public class Player : MonoBehaviour
                 _spAnimator.speed = 1;
             }
         }
+    }
+
+    private void Load()
+    {
+        _flashPrefab     =  (GameObject)Resources.Load("PlayerSP/Flash");
+        _sword1Prefab    =  (GameObject)Resources.Load("PlayerSP/Sword1");
+        _sword2Prefab    =  (GameObject)Resources.Load("PlayerSP/Sword2");
+        _arrowPrefab     =  (GameObject)Resources.Load("Arrow");
+        _hitEffectPrefab =  (GameObject)Resources.Load("HitEffect");
     }
 
     private void OnDestroy()

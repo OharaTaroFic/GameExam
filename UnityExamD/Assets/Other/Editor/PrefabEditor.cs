@@ -16,10 +16,6 @@ public class PrefabEditor
 
     static void OnChangePlayerSetting(SceneView sceneView)
     {
-        // Editシーンなら終了
-        var sceneName = EditorSceneManager.GetActiveScene().name;
-        if (sceneName == "EditScene") return;
-
         // GUIの描画開始
         Handles.BeginGUI();
 

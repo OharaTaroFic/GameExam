@@ -19,27 +19,24 @@ public class Enemy : MonoBehaviour
     private const int ATTACK_WAIT_LASER = 9;
     
     // パラメーター
-    [Header("攻撃種類")]
-    [SerializeField] private EnemyAttackKind _attackKind;
     [Header("ステータス")]
     [SerializeField] private int _maxHp = 100;
     [SerializeField] private int _attackTurn = 3;
     [SerializeField] private int _power = 20;
     [SerializeField] private float _attackSize = 1.0f;
     [SerializeField] private int _score = 100;
+    [SerializeField] private EnemyAttackKind _attackKind;
     // 攻撃プレハブ
-    [Space, Space, Space, Header("攻撃プレハブ")]
-    [SerializeField] private GameObject _explosionPrefab;
-    [SerializeField] private GameObject _bulletPrefab;
-    [SerializeField] private GameObject _laserPrefab;
+    private GameObject _explosionPrefab;
+    private GameObject _bulletPrefab;
+    private GameObject _laserPrefab;
     // 現在ステータス
     private int _turn;
     private int _hp;
     private int _waitFrame;
     private bool _isAttack;
     // その他変数
-    [Header("演出用プレハブ")]
-    [SerializeField] private GameObject _deathPrebaf;
+    private GameObject _deathPrebaf;
     [Header("効果音")]
     [SerializeField] private AudioClip _damageSe;
 
@@ -64,6 +61,11 @@ public class Enemy : MonoBehaviour
 
         _player = GameObject.Find("Player");
         _seSource = GameObject.Find("Se").GetComponent<AudioSource>();
+
+        _explosionPrefab = (GameObject)Resources.Load("EnemyAttack/Explotion");
+        _bulletPrefab    = (GameObject)Resources.Load("EnemyAttack/Bullet");
+        _laserPrefab     = (GameObject)Resources.Load("EnemyAttack/Laser");
+        _deathPrebaf     = (GameObject)Resources.Load("Death/EnemyDeath");
 
         _hp = _maxHp;
         _turn = _attackTurn;

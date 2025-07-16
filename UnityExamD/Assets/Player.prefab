@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -175,20 +175,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHp: 1000
   _power: 50
-  _spPower: 2147483647
-  _moveSpeed: 20
+  _spPower: 1000
+  _moveSpeed: 200
   _spCost: 1
-  _spKind: 0
-  _animIdle: {fileID: 9100000, guid: be96ee4549eedd847bbbec32036ebccd, type: 2}
+  _spKind: 1
+  _animIdle: {fileID: 9100000, guid: 0c84f7174a3eba2418a7cbed1202a96a, type: 2}
   _animMove: {fileID: 9100000, guid: de1eac56588292541925d8ad558a72d9, type: 2}
   _animAttack: {fileID: 9100000, guid: 6830e7e82d57b4249a5a9eda98097b0d, type: 2}
   _animWin: {fileID: 9100000, guid: 0195cb475bc66184995a7a3e8debd8cf, type: 2}
   _animLose: {fileID: 9100000, guid: 65208aca034b0cf41b62ed1f7d1b6c36, type: 2}
-  _flashPrefab: {fileID: 73343324151752924, guid: 29fa06e26e9866b45b79ee7037845e6c, type: 3}
-  _sword1Prefab: {fileID: 3783627064010854837, guid: f231f693d287ec64baa9addeb77441be, type: 3}
-  _sword2Prefab: {fileID: 6902264930276287433, guid: 6ec76d179b8df1c47b98f61f0a307a04, type: 3}
-  _arrowPrefab: {fileID: 4307165171990216172, guid: a392c1bf094c77b4a9337ecca06d4583, type: 3}
-  _hitEffectPrefab: {fileID: 6459493655273327280, guid: c73186ac62b85bd4fb9558770c1b59af, type: 3}
   _shotSe: {fileID: 8300000, guid: 3338388a43869944fa29de5d579bbd7b, type: 3}
   _damageSe: {fileID: 8300000, guid: 96c0d2b6ba35e3244b9b52f7a771bfea, type: 3}
   _spChargeSe: {fileID: 8300000, guid: 7b39d87cba4decc4386efe16795a8c8b, type: 3}
