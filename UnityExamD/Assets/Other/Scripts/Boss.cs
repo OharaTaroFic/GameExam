@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.iOS;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,6 +48,10 @@ public class Boss : MonoBehaviour
     // その他変数
     [Header("演出用プレハブ")]
     [SerializeField] private GameObject _deathPrebaf;
+    [Header("効果音")]
+    [SerializeField] private AudioClip _damageSe;
+
+    private AudioSource _seSource;
     private GameDirector _mgr;
     private ScoreManager _scoreMgr;
     private Slider _hpBar;
@@ -62,6 +67,7 @@ public class Boss : MonoBehaviour
         _scoreMgr = mgr.GetComponent<ScoreManager>();
 
         // コンポーネント取得
+        _seSource = GameObject.Find("Se").GetComponent<AudioSource>();
         _hpBar = GameObject.Find("BossHpBar").GetComponent<Slider>();
         _hpText = GameObject.Find("BossHpValue").GetComponent<Text>();
         _countText = GameObject.Find("BossCountText").GetComponent<Text>();
@@ -114,6 +120,7 @@ public class Boss : MonoBehaviour
 
         // Hp減少
         _hp -= damage;
+        _seSource.PlayOneShot(_damageSe);
 
         // Hpが0以下になったら
         if (_hp <= 0)

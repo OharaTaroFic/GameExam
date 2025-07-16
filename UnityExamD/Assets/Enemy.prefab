@@ -474,6 +474,7 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 32562764163868583, guid: b795ffb6031fd5346b6334a155ff32ca, type: 3}
   _laserPrefab: {fileID: 548030791789809368, guid: 9799430bc8fd6e14e95200def4860738, type: 3}
   _deathPrebaf: {fileID: 5985634496115995773, guid: 463cf9f7af4680240898f6aeba3fe3e6, type: 3}
+  _damageSe: {fileID: 8300000, guid: 1646611c8374c4842bc7fc4860cc9285, type: 3}
 --- !u!1 &3669981353337675559
 GameObject:
   m_ObjectHideFlags: 0

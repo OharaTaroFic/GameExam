@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public static class GameData
+{
+    public static int score;
+    public static int spCount;
+    public static int playerHp;
+}
+
 public class GameDirector : MonoBehaviour
 {
     struct EnemyData
@@ -48,6 +55,12 @@ public class GameDirector : MonoBehaviour
     private bool _isLose = false;
     private bool _isNext = false;
 
+    [SerializeField] private AudioClip _clearBgm;
+    [SerializeField] private AudioClip _loseBgm;
+    [SerializeField] private AudioClip _warningSe;
+    private AudioSource _bgmSource;
+    private AudioSource _seSource;
+
     public bool IsPlayerTurn { get { return _isPlayerTurn; } }
     public bool IsSpAttack {  get { return _isSpAttack; } }
     public bool IsBossAttack { get { return _isBossAttack; } }
@@ -63,6 +76,9 @@ public class GameDirector : MonoBehaviour
         _playerCamera = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>();
         _animEffect = GameObject.Find("Effect").GetComponent<Animator>();
         _turnAnim = GameObject.Find("TurnEffect").GetComponent<Animator>();
+        _bgmSource = GameObject.Find("Bgm").GetComponent<AudioSource>();
+        _seSource = GameObject.Find("Se").GetComponent<AudioSource>();
+
         var list = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
         foreach (var item in list)
         {
@@ -81,6 +97,8 @@ public class GameDirector : MonoBehaviour
             _isBoss = true;
             _turnAnim.SetTrigger("OnBossEnter");
             _turnAnim.speed = 1.0f;
+            _bgmSource.Stop();
+            _seSource.PlayOneShot(_warningSe);
         }
         else
         {
@@ -107,7 +125,11 @@ public class GameDirector : MonoBehaviour
                 _isStart = false;
                 _frame = CHANGE_TURN_FRAME;
                 _isChangeTurn = true;
-                if (_isBoss) _turnAnim.SetTrigger("OnPlayer");
+                if (_isBoss)
+                {
+                    _turnAnim.SetTrigger("OnPlayer");
+                    _bgmSource.Play();
+                }
                 _turnAnim.speed = 1;
             }
             return;
@@ -296,6 +318,8 @@ public class GameDirector : MonoBehaviour
             _animEffect.SetTrigger("OnClear");
             _animEffect.speed = 1;
             _player.OnClear();
+            _bgmSource.Stop();
+            _bgmSource.PlayOneShot(_clearBgm);
         }
         else
         {
@@ -311,5 +335,7 @@ public class GameDirector : MonoBehaviour
         _animEffect.SetTrigger("OnLose");
         _animEffect.speed = 1;
         _isLose = true;
+        _bgmSource.Stop();
+        _bgmSource.PlayOneShot(_loseBgm);
     }
 }

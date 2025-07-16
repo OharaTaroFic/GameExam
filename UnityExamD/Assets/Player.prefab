@@ -14,11 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHp: 1000
   _power: 50
-  _spPower: 10000
+  _spPower: 2147483647
   _moveSpeed: 20
   _spCost: 1
   _spKind: 0
@@ -189,6 +189,10 @@ MonoBehaviour:
   _sword2Prefab: {fileID: 6902264930276287433, guid: 6ec76d179b8df1c47b98f61f0a307a04, type: 3}
   _arrowPrefab: {fileID: 4307165171990216172, guid: a392c1bf094c77b4a9337ecca06d4583, type: 3}
   _hitEffectPrefab: {fileID: 6459493655273327280, guid: c73186ac62b85bd4fb9558770c1b59af, type: 3}
+  _shotSe: {fileID: 8300000, guid: 3338388a43869944fa29de5d579bbd7b, type: 3}
+  _damageSe: {fileID: 8300000, guid: 96c0d2b6ba35e3244b9b52f7a771bfea, type: 3}
+  _spChargeSe: {fileID: 8300000, guid: 7b39d87cba4decc4386efe16795a8c8b, type: 3}
+  _spMaxSe: {fileID: 8300000, guid: b1f749f80da1f0c43ab04a1dea26d32f, type: 3}
 --- !u!95 &9014038564868513725
 Animator:
   serializedVersion: 7

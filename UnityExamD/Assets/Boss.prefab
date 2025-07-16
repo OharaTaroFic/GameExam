@@ -1897,6 +1897,7 @@ MonoBehaviour:
   _meteorPrefab: {fileID: 3525705752829754562, guid: d40b63613aebf5e4781b9684ed958ab3, type: 3}
   _thunderPrefab: {fileID: 7900871806661460993, guid: 3fe3db8cb2ef6974da6334c4982ee753, type: 3}
   _deathPrebaf: {fileID: 5642766282230003982, guid: b5c8ca7ed10b61e499cce8ec3b6e2e4c, type: 3}
+  _damageSe: {fileID: 8300000, guid: 1646611c8374c4842bc7fc4860cc9285, type: 3}
 --- !u!135 &2567786577798427168
 SphereCollider:
   m_ObjectHideFlags: 0

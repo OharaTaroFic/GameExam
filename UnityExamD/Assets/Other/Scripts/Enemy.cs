@@ -40,6 +40,10 @@ public class Enemy : MonoBehaviour
     // その他変数
     [Header("演出用プレハブ")]
     [SerializeField] private GameObject _deathPrebaf;
+    [Header("効果音")]
+    [SerializeField] private AudioClip _damageSe;
+
+    private AudioSource _seSource;
     private GameObject _player;
     private GameDirector _mgr;
     private ScoreManager _scoreMgr;
@@ -59,6 +63,7 @@ public class Enemy : MonoBehaviour
         _countText = _canvas.GetChild(2).GetComponent<Text>();
 
         _player = GameObject.Find("Player");
+        _seSource = GameObject.Find("Se").GetComponent<AudioSource>();
 
         _hp = _maxHp;
         _turn = _attackTurn;
@@ -88,6 +93,7 @@ public class Enemy : MonoBehaviour
     {
         // Hp減少
         _hp -= damage;
+        _seSource.PlayOneShot(_damageSe);
 
         // Hpが0以下になったら
         if (_hp <= 0)

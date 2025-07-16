@@ -1,3 +1,4 @@
+using UnityEditor.iOS;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -98,6 +99,13 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _sword2Prefab;
     [SerializeField] private GameObject _arrowPrefab;
     [SerializeField] private GameObject _hitEffectPrefab;
+
+    [Header("効果音")]
+    [SerializeField] private AudioClip _shotSe;
+    [SerializeField] private AudioClip _damageSe;
+    [SerializeField] private AudioClip _spChargeSe;
+    [SerializeField] private AudioClip _spMaxSe;
+
     private GameDirector _mgr;
     private CameraManager _cameraMgr;
     private GameObject _playerCamera;
@@ -119,6 +127,7 @@ public class Player : MonoBehaviour
     private Slider _hpBar;
     private Text _hpText;
     private Animator _spAnimator;
+    private AudioSource _seSource;
 
     // 画面調整用
     private float _maxLen;
@@ -161,6 +170,7 @@ public class Player : MonoBehaviour
             _hpBar = GameObject.Find("PlayerHpBar").GetComponent<Slider>();
             _hpText = GameObject.Find("PlayerHpValue").GetComponent<Text>();
             _spAnimator = GameObject.Find("SpGauge").GetComponent<Animator>();
+            _seSource = GameObject.Find("Se").GetComponent<AudioSource>();
 
             // オブジェクト取得.
             _playerCamera = GameObject.Find("PlayerCamera");
@@ -447,6 +457,7 @@ public class Player : MonoBehaviour
                     vec = cameraRot * vec;
                 }
 
+                _seSource.PlayOneShot(_shotSe);
                 _animator.runtimeAnimatorController = _animAttack;
                 var force = vec * _moveSpeed;
                 _rigid.AddForce(force, ForceMode.Impulse);
@@ -558,13 +569,17 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Enemy")
         {
             collision.transform.GetComponent<Enemy>().OnDamage(_power);
-            Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
+            var pos = transform.position;
+            pos.y += 1;
+            Instantiate(_hitEffectPrefab, pos, Quaternion.identity);
         }
         // ボスと当たったらダメージを与える。
         else if (collision.gameObject.tag == "Boss")
         {
             collision.transform.GetComponent<Boss>().OnDamage(_power);
-            Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
+            var pos = transform.position;
+            pos.y += 1;
+            Instantiate(_hitEffectPrefab, pos, Quaternion.identity);
         }
     }
 
@@ -593,6 +608,7 @@ public class Player : MonoBehaviour
 
         // HP減少
         _hp -= damage;
+        _seSource.PlayOneShot(_damageSe);
 
         // 死亡判定
         if (_hp <= 0)
@@ -623,12 +639,14 @@ public class Player : MonoBehaviour
             _spAnimRate = (float)_spCount / _spCost;
             _spAnimator.speed = 1;
             _isUpdateSpAnim = true;
+            _seSource.PlayOneShot(_spChargeSe);
         }
         else
         {
             _isChargeSp = true;
             _spAnimator.SetTrigger("OnMax");
             _spAnimator.speed = 1;
+            _seSource.PlayOneShot(_spMaxSe);
         }
     }
     

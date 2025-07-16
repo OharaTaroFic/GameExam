@@ -4,13 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public static class GameData
-{
-    public static int score;
-    public static int spCount;
-    public static int playerHp;
-}
-
 public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private Text _text;
