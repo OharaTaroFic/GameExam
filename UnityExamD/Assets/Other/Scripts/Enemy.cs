@@ -93,6 +93,8 @@ public class Enemy : MonoBehaviour
 
     public void OnDamage(int damage)
     {
+        if (_hp <= 0) return;
+
         // HpŒ¸­
         _hp -= damage;
         _seSource.PlayOneShot(_damageSe);

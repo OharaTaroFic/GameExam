@@ -1590,6 +1590,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4836655104349358576, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ed034d9d57e862342a08b73796bb21f9, type: 2}
+    - target: {fileID: 5358997215094427741, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ed034d9d57e862342a08b73796bb21f9, type: 2}
+    - target: {fileID: 6852092896467293184, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: _animWin
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852092896467293184, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: _animIdle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852092896467293184, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: _animLose
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852092896467293184, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: _animMove
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852092896467293184, guid: 1d764e3071ed71948a4f661bdca6cc32, type: 3}
+      propertyPath: _animAttack
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
