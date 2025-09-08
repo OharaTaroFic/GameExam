@@ -60,18 +60,24 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void Attack()
     {
-        // プレイヤーが射程外に出たら追跡へ戻す
         if (Vector3.Distance(transform.position, player.position) > attackRange)
         {
             ChangeState(State.Chase);
             return;
         }
 
-        // クールタイムが終わっていたら攻撃
         if (attackTimer >= attackInterval)
         {
-            attackTimer = 0f; // クールタイムリセット
+            attackTimer = 0f;
+
             Debug.Log($"{gameObject.name} が攻撃した！");
+
+            // ★ Playerにダメージを与える
+            PlayerController pc = player.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.TakeDamage(10); // 敵からのダメージは固定10
+            }
         }
     }
 

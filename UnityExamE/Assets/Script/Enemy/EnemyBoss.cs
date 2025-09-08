@@ -48,6 +48,7 @@ public class EnemyBoss : EnemyBase
     void Phase1Attack()
     {
         Debug.Log("ボス フェーズ1：近接攻撃");
+        DamagePlayer();
     }
 
     void Phase2Attack()
@@ -61,10 +62,21 @@ public class EnemyBoss : EnemyBase
         {
             Debug.Log("ボス フェーズ2：範囲攻撃");
         }
+        DamagePlayer();
     }
 
     void Phase3Attack()
     {
         Debug.Log("ボス フェーズ3：必殺技！！");
+        DamagePlayer();
+    }
+
+    void DamagePlayer()
+    {
+        PlayerController pc = player.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            pc.TakeDamage(10);
+        }
     }
 }
