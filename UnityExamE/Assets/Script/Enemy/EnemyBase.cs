@@ -10,44 +10,29 @@ public abstract class EnemyBase : MonoBehaviour
     [Header("攻撃関連")]
     public float attackInterval = 1.5f; // 攻撃間隔
     protected float attackTimer = 0f;
+    public int attackDamage = 10; // プレイヤーに与えるダメージ
+
+    [Header("HP関連")]
+    public int maxHP = 50;
+    protected int currentHP;
 
     protected Transform player;
 
     protected enum State { Idle, Chase, Attack }
     protected State currentState = State.Idle;
 
-    public int maxHealth = 50;
-    protected int currentHealth;
     protected virtual void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        currentHealth = maxHealth;
+        currentHP = maxHP;
     }
 
     protected virtual void Update()
     {
-        // 攻撃タイマーを進める（範囲外でも進めてOK）
         attackTimer += Time.deltaTime;
-
         StateMachine();
     }
 
-    public virtual void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        Debug.Log(name + " に " + damage + " ダメージ！ 残りHP: " + currentHealth);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    protected virtual void Die()
-    {
-        Debug.Log(name + " は倒れた！");
-        Destroy(gameObject);
-    }
     void StateMachine()
     {
         switch (currentState)
@@ -79,23 +64,24 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void Attack()
     {
+        // プレイヤーが範囲外に出たら追跡に戻る
         if (Vector3.Distance(transform.position, player.position) > attackRange)
         {
             ChangeState(State.Chase);
             return;
         }
 
+        // クールタイムが終わっていたら攻撃
         if (attackTimer >= attackInterval)
         {
             attackTimer = 0f;
-
             Debug.Log($"{gameObject.name} が攻撃した！");
 
-            // ★ Playerにダメージを与える
+            // Playerにダメージを与える
             PlayerController pc = player.GetComponent<PlayerController>();
             if (pc != null)
             {
-                pc.TakeDamage(10); // 敵からのダメージは固定10
+                pc.TakeDamage(attackDamage);
             }
         }
     }
@@ -103,5 +89,23 @@ public abstract class EnemyBase : MonoBehaviour
     protected void ChangeState(State nextState)
     {
         currentState = nextState;
+    }
+
+    // ===== HP処理 =====
+    public virtual void TakeDamage(int damage)
+    {
+        currentHP -= damage;
+        Debug.Log($"{gameObject.name} が {damage} ダメージを受けた！ 残りHP: {currentHP}");
+
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+    }
+
+    protected virtual void Die()
+    {
+        Debug.Log($"{gameObject.name} は倒れた！");
+        Destroy(gameObject);
     }
 }

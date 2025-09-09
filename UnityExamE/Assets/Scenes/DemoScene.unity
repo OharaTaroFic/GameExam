@@ -310,7 +310,8 @@ MonoBehaviour:
   attackRange: 2
   detectionRange: 5
   attackInterval: 2
-  maxHealth: 50
+  attackDamage: 10
+  maxHP: 50
 --- !u!65 &412818669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -419,6 +420,7 @@ GameObject:
   - component: {fileID: 647385682}
   - component: {fileID: 647385681}
   - component: {fileID: 647385687}
+  - component: {fileID: 647385688}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -456,7 +458,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   puniCon: {fileID: 1354960495}
+  baseAttack: 10
   maxHP: 100
+  skill1: {fileID: 0}
+  skill2: {fileID: 0}
 --- !u!135 &647385683
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -542,7 +547,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1020931756}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &647385687
@@ -558,11 +564,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 2
-  attackDamage: 10
-  attackPoint: {fileID: 647385686}
+  attackPoint: {fileID: 1020931756}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &647385688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647385680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc1dcafaae310144a2dfdd9ff30cb50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 647385682}
+  skillSlots: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,6 +855,37 @@ MonoBehaviour:
   horizontalAngle: 65
   lookUpOffset: 3
   followSpeed: 5
+--- !u!1 &1020931755
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1020931756}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1020931756
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020931755}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.72, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 647385686}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1043550107
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,7 +922,8 @@ MonoBehaviour:
   attackRange: 2
   detectionRange: 5
   attackInterval: 1.5
-  maxHealth: 50
+  attackDamage: 10
+  maxHP: 50
 --- !u!65 &1043550109
 BoxCollider:
   m_ObjectHideFlags: 0
