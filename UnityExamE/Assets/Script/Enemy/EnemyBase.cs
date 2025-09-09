@@ -16,9 +16,12 @@ public abstract class EnemyBase : MonoBehaviour
     protected enum State { Idle, Chase, Attack }
     protected State currentState = State.Idle;
 
+    public int maxHealth = 50;
+    protected int currentHealth;
     protected virtual void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        currentHealth = maxHealth;
     }
 
     protected virtual void Update()
@@ -29,6 +32,22 @@ public abstract class EnemyBase : MonoBehaviour
         StateMachine();
     }
 
+    public virtual void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log(name + " に " + damage + " ダメージ！ 残りHP: " + currentHealth);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    protected virtual void Die()
+    {
+        Debug.Log(name + " は倒れた！");
+        Destroy(gameObject);
+    }
     void StateMachine()
     {
         switch (currentState)

@@ -310,6 +310,7 @@ MonoBehaviour:
   attackRange: 2
   detectionRange: 5
   attackInterval: 2
+  maxHealth: 50
 --- !u!65 &412818669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -417,6 +418,7 @@ GameObject:
   - component: {fileID: 647385683}
   - component: {fileID: 647385682}
   - component: {fileID: 647385681}
+  - component: {fileID: 647385687}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -543,6 +545,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &647385687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647385680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74e772577c2f3a94a8cba5d91010fb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 2
+  attackDamage: 10
+  attackPoint: {fileID: 647385686}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -715,6 +735,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -796,6 +817,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 28.31, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d13814bd203f9f54b829264e7e81c493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 647385686}
+  height: 15
+  distance: 8
+  verticalAngle: 0
+  horizontalAngle: 65
+  lookUpOffset: 3
+  followSpeed: 5
 --- !u!1 &1043550107
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +872,7 @@ MonoBehaviour:
   attackRange: 2
   detectionRange: 5
   attackInterval: 1.5
+  maxHealth: 50
 --- !u!65 &1043550109
 BoxCollider:
   m_ObjectHideFlags: 0
