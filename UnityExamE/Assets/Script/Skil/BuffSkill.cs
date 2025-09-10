@@ -15,14 +15,14 @@ public class BuffSkill : SkillBase
 
     private IEnumerator BuffRoutine(PlayerController player)
     {
-        player.SetAttackMultiplier(attackMultiplier);
+        //player.SetAttackMultiplier(attackMultiplier);
         player.SetSpeedMultiplier(moveSpeedMultiplier);
 
         Debug.Log($"[{skillName}] 発動！ 攻撃力x{attackMultiplier}, 移動速度x{moveSpeedMultiplier}");
 
         yield return new WaitForSeconds(duration);
 
-        player.SetAttackMultiplier(1f);
+        //player.SetAttackMultiplier(1f);
         player.SetSpeedMultiplier(1f);
 
         Debug.Log($"[{skillName}] バフ終了");

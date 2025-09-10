@@ -1,20 +1,15 @@
 using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour
+public class EnemyBase : MonoBehaviour
 {
-    [Header("共通設定")]
-    public float moveSpeed = 2f;
-    public float attackRange = 2f;
-    public float detectionRange = 5f;
-
-    [Header("攻撃関連")]
-    public float attackInterval = 1.5f; // 攻撃間隔
-    protected float attackTimer = 0f;
-    public int attackDamage = 10; // プレイヤーに与えるダメージ
-
-    [Header("HP関連")]
     public int maxHP = 50;
     protected int currentHP;
+
+    public float moveSpeed = 3f;
+    public float detectionRange = 10f;
+    public float attackRange = 2f;
+    protected float attackTimer = 0f;
+    public float attackInterval = 2f;
 
     protected Transform player;
 
@@ -23,18 +18,14 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
         currentHP = maxHP;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     protected virtual void Update()
     {
         attackTimer += Time.deltaTime;
-        StateMachine();
-    }
 
-    void StateMachine()
-    {
         switch (currentState)
         {
             case State.Idle: Idle(); break;
@@ -64,26 +55,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void Attack()
     {
-        // プレイヤーが範囲外に出たら追跡に戻る
-        if (Vector3.Distance(transform.position, player.position) > attackRange)
-        {
-            ChangeState(State.Chase);
-            return;
-        }
-
-        // クールタイムが終わっていたら攻撃
-        if (attackTimer >= attackInterval)
-        {
-            attackTimer = 0f;
-            Debug.Log($"{gameObject.name} が攻撃した！");
-
-            // Playerにダメージを与える
-            PlayerController pc = player.GetComponent<PlayerController>();
-            if (pc != null)
-            {
-                pc.TakeDamage(attackDamage);
-            }
-        }
+        // 具体的な攻撃処理は子クラスで
     }
 
     protected void ChangeState(State nextState)
@@ -91,10 +63,11 @@ public abstract class EnemyBase : MonoBehaviour
         currentState = nextState;
     }
 
-    // ===== HP処理 =====
     public virtual void TakeDamage(int damage)
     {
         currentHP -= damage;
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+
         Debug.Log($"{gameObject.name} が {damage} ダメージを受けた！ 残りHP: {currentHP}");
 
         if (currentHP <= 0)
