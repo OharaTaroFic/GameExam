@@ -199,6 +199,24 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2593914132745204140, guid: 7654953ef9985f94f8554ae91430a03a, type: 3}
   m_PrefabInstance: {fileID: 1088728526173512592}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &198527767 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4964158068444290285, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+  m_PrefabInstance: {fileID: 3252924222211368055}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &198527769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198527767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3007bc464e5ebe4088257c681942f33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectObject: {fileID: 198527767}
 --- !u!1 &351723452
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,6 +1729,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: SizeModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: SizeModule.separateAxes
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime4
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4964158068463846797, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.m_ColorSpace
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7038432808552402693, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
       propertyPath: m_Name
       value: StageSample
@@ -1718,7 +1764,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4964158068444290285, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 198527769}
   m_SourcePrefab: {fileID: 100100000, guid: e9a9d28e1f690f94c930c04b5e5f2822, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
