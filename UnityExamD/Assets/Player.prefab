@@ -59,7 +59,7 @@ PrefabInstance:
     - target: {fileID: -2565121969311997460, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8d6672d59485eb14ca04c7e7e41610db, type: 2}
+      objectReference: {fileID: 2100000, guid: ed034d9d57e862342a08b73796bb21f9, type: 2}
     - target: {fileID: -2518910438110340177, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -107,7 +107,7 @@ PrefabInstance:
     - target: {fileID: 6135979168108361793, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f09c3d8a6cbf22247a3e71e033c870c2, type: 2}
+      objectReference: {fileID: 2100000, guid: ed034d9d57e862342a08b73796bb21f9, type: 2}
     - target: {fileID: 6662170933501563670, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -211,11 +211,11 @@ MonoBehaviour:
   _moveSpeed: 50
   _spCost: 4
   _spKind: 1
-  _animIdle: {fileID: 9100000, guid: 67e5d01c255a9c6458e123b67afcdad6, type: 2}
-  _animMove: {fileID: 9100000, guid: de1eac56588292541925d8ad558a72d9, type: 2}
-  _animAttack: {fileID: 9100000, guid: 6830e7e82d57b4249a5a9eda98097b0d, type: 2}
-  _animWin: {fileID: 9100000, guid: 0195cb475bc66184995a7a3e8debd8cf, type: 2}
-  _animLose: {fileID: 9100000, guid: 65208aca034b0cf41b62ed1f7d1b6c36, type: 2}
+  _animIdle: {fileID: 0}
+  _animMove: {fileID: 0}
+  _animAttack: {fileID: 0}
+  _animWin: {fileID: 0}
+  _animLose: {fileID: 0}
   _shotSe: {fileID: 8300000, guid: 3338388a43869944fa29de5d579bbd7b, type: 3}
   _damageSe: {fileID: 8300000, guid: 96c0d2b6ba35e3244b9b52f7a771bfea, type: 3}
   _spChargeSe: {fileID: 8300000, guid: 7b39d87cba4decc4386efe16795a8c8b, type: 3}
