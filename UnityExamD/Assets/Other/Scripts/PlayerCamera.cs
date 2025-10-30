@@ -74,6 +74,15 @@ public class PlayerCamera : MonoBehaviour
         input.actions["DoubleTouch"].canceled += OnDoubleTouch;
     }
 
+    private void OnDisable()
+    {
+        // PlayerInput‚©‚çŠÖ”‚ğíœ
+        var input = _player.GetComponent<PlayerInput>();
+        input.actions["Position"].performed -= HoldTouch;
+        input.actions["DoubleTouch"].started -= OnDoubleTouch;
+        input.actions["DoubleTouch"].canceled -= OnDoubleTouch;
+    }
+
     private void FixedUpdate()
     {
         if (_isStart)
