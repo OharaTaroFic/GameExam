@@ -51,37 +51,52 @@
 
 - **プレイヤーは初期状態で真っ黒。** `Assets/Prefab/model/*.fbx` の中の素材には画像が無く、`Assets/Material/` の体・髪・目・武器のマテリアル（m_body_*、mat_hair_*、mat_eyes_*、mat_swordShield_*、mat_bowArrow_*）を当てると色が付く。これが CG 体験の素材。URP でも当てれば正しく表示されることを確認済み
 - モーションは `Assets/Animators/` に idle1〜7、walk1、run1〜5、win1〜9（8 は無い）、lose1〜3 の Animator Controller がある
-- **GameScene にはプレイヤーがいない**（カメラ・ライト・GameDirector・BGM・Map・Enemy・Dot だけ）。ExamC では授業中に置かせていたのかもしれない（未確認）
-- ExamC のスクリプトは古い入力の仕組み（`Input.GetAxis`）を使っているが、ExamD の設定は新しい入力の仕組みだけ（`activeInputHandler: 1`）。このままでは実行時にエラーになるはず（未確認。スマホ操作を作るときに合わせて対応する）
-- タグ（Dot、Enemy）が ExamC の TagManager に登録されていない（`tags: []`）。授業の課題の一部だった可能性がある（未確認）
-- シーンを開くと「LightingData が古い」という警告が出る（ライティングの焼き直しで消える。害はない）
+- 入力は新しい仕組み（Input System）だけの設定（`activeInputHandler: 1`）。2026-10-15 に Player.cs と SceneChanger.cs を新しい仕組みに書き直し、TitleScene と EditScene の EventSystem も InputSystemUIInputModule に差し替えた。**EditPlayer.cs は古い `Input.GetAxis` のまま**（どのシーンでも使っていないのでエラーは出ない）
+- **敵の速さ（NavMeshAgent・Enemy._speed とも 10）が、プレイヤーの速さ（MoveSpeed 5）の 2 倍。** ExamC のまま。難易度の調整は段階B で実機を見て決める
+- ゲーム中のカメラ（GameSceneCamera）はプレイヤーの斜め上（上に 5、後ろに 3）から追いかける近い視点。迷路全体は映らない。このため「迷路を縦画面にどう収めるか」の問題は小さいかもしれない（段階B で実際の画面を見て判断）
+- ライティングの警告（「LightingData が今の Unity 版と合わない」）は 2026-10-15 に解消。原因は、GameScene と EditScene が 1 つのライティングデータ（`Assets/SceneSetting/LightingData.asset`。ExamC で片方のシーンを複製して作ったためと思われる）を共有していて、そのデータに「どのシーン用か」の記録が無かったこと。2 つのシーンでライティングを生成し直し、それぞれ専用のデータ（`Assets/GameScene/`、`Assets/EditScene/`）にした。古いデータと、それが使っていた反射の画像は削除。前後で画像を比べ、差は最大 8/255（見た目は変わらない）。5 シーンとも開いたときの警告 0 件を確認。焼き込み対象の物体は無いので、生成は 1 秒ほどで終わる
+- ライトの向き: 元（ExamC のまま）は EditScene・GameScene とも回転 (50, 145, 0) で、キャラクターの**背中側**から当たっていた。正面が日陰になり、盾に体の影がざらざらと落ちていた（ユーザーが盾の影として気づいた）。2026-10-15 に両シーンとも (50, 30, 0)（カメラ側から当たる向き）に変え、ライティングを生成し直した。切り分け: 影を切ると盾がきれいになる／盾自身の影を切っても半分暗いまま（体の影）／マテリアルは片面表示で正常
+- 床（AlphaMaskURP シェーダー）には、壁やキャラクターの影が落ちていないように見える（画像で見た印象。未確認）
+- NavMesh（敵が歩ける範囲のデータ）は、今も GameScene と EditScene が `Assets/SceneSetting/NavMesh.asset` を共有している（警告は出ていない）
 - スクリプトは 2026-10-15 に Shift-JIS から UTF-8（BOM 付き）に変換済み。`.editorconfig` で、Visual Studio で編集しても UTF-8 のまま保存される
 - 今のビルド先は Windows のまま。WebGL への切り替えはまだしていない
 
-### ゲームが遊べる状態か（2026-10-15、ファイルを読んで点検。Unity での実行はまだ）
+### ゲームの状態（2026-10-15、Unity で再生して確認）
 
-まだ遊べない。足りないもの:
-1. GameScene にプレイヤーがいない。カメラ（GameSceneCamera）と敵（Enemy）が Player タグを探すので、再生するとエラーになる。プレイヤーのプレハブも無い（EditScene に idle1.fbx ＋ Player スクリプトの実体が 1 つあるだけ）
-2. タグ Dot・Enemy が未登録。プレハブには書いてあるが TagManager が空なので、GameDirector の FindGameObjectsWithTag("Dot") がエラーになる
-3. 入力が古い仕組み（Input.GetAxis、Input.GetButtonDown("Submit")）で、新しい仕組みだけの設定と合わない。スマホのタッチ操作も無い
-4. ビルド設定のシーン一覧が `Assets/Scenes/SampleScene.unity`（存在しない）だけ。5 つのシーンが登録されていないので、シーン移動ができない
-5. 縦画面の設定、WebGL への切り替えがまだ
+**パソコンのキーボードで遊べる状態になった（段階A 完了）。** 再生して確かめたこと: 敵が迷路に沿って追ってくる、D キーで右へ動き走るモーションに切り替わる、敵に触れると LoseScene、Enter でタイトル、スペースで GameScene、星を取ると WinScene。再生中のエラーは無し（ライティングの警告だけ）。
 
-問題ないところ: スクリプト 6 本の中身は完成している（ExamC の「体験①③」の穴は埋まった状態）。勝ち（星が 0 で WinScene）・負け（敵に触れて LoseScene）・敵の追跡（NavMesh。GameScene と EditScene が同じ `SceneSetting/NavMesh.asset` を参照）の仕組みはある。EditPlayer.cs はどのシーンでも使われていない（中の "Lose" というシーン名は誤り）。
-EditScene のボタンはモーションを見比べるだけで、選んだ結果を GameScene に引き継ぐ仕組みは無い。見た目とモーションは、Unity エディタ上でマテリアルと Animator Controller を差し替えて決める形になると思われる（推測）。
+- プレイヤー: `Assets/Player.prefab`（idle1.fbx のプレハブ変種）。Player タグ、CharacterController（高さ 1.9、半径 0.4）、Animator（idle1.fbx には元々付いていないので追加。ルートモーション無し）、Player スクリプト。仮の見た目は m_body_normal・m_eyes_dark・m_hair_brown・m_swordShield_brown1・m_bowArrow_brown、仮のモーションは idle1・walk1・run1・win1・lose1。GameScene の左端（-13, 0, 3.2）に右向きで配置
+- モデルの色の割り当て先は 5 か所: mat_zelda（体）、mat_zeldaEyes（目）、mat_zeldaHair（髪）、mat_melee（剣・盾など）、mat_ranged（弓矢）
+- ビルドのシーン一覧: TitleScene → GameScene → WinScene → LoseScene。**EditScene は入れていない**（どこからも移動できない。残すかは段階C で決める）
+- Player.cs の移動は、`<Gamepad>/leftStick` と、キーボードの WASD・矢印キーを 1 つの InputAction で読む。段階B の画面のスティック（OnScreenStick）は Gamepad の左スティックとして入るので、そのまま効く見込み
+- SceneChanger.cs は Enter かスペースで次へ、Esc で終了。タップはまだ（段階B）
+- 気になる点: Animator Controller の `idle2` に idle3 の動き、`win1` に lose1 の動きが余分な状態として入っている。どちらが再生されるかは未確認
+- EditScene のボタンはモーションを見比べるだけで、選んだ結果を GameScene に引き継ぐ仕組みは無い。見た目とモーションは、Unity エディタ上で Player.prefab のマテリアルと Animator Controller を差し替えて決める形になると思われる（推測）
+- EditPlayer.cs はどのシーンでも使われていない（中の "Lose" というシーン名は誤り）
 
 ### 直す計画（2026-10-15 にユーザーが了承）
 
 方針: 生徒はスマホで遊ぶ想定。操作の差（キーボードは正確すぎる）と見える範囲の差で、PC では遊べてもスマホでは難しすぎるステージになるのを防ぐため、**生徒が使う操作は画面のスティックだけ**（PC ではマウスでつかむ）。**キーボードは開発用のスイッチの裏に置き、生徒に配る版では切る。** Game ビューはスマホと同じ縦長の比率に固定する。
 
-- **段階A: パソコンで遊べるようにする**（開発用のキーボード操作で、ゲームの中身を確かめる）
-  1. スクリプトを UTF-8 に変換 ← **済み**（Player / Enemy / GameDirector / EditPlayer を BOM 付き UTF-8 に。往復変換で元と一致を確認。プロジェクト直下に `.editorconfig` を置き、`*.cs` を UTF-8（BOM 付き）・CRLF に固定）
-  2. タグ Dot・Enemy を登録
+- **段階A: パソコンで遊べるようにする** ← **完了（2026-10-15）**
+  1. スクリプトを UTF-8 に変換（Player / Enemy / GameDirector / EditPlayer を BOM 付き UTF-8 に。往復変換で元と一致を確認。プロジェクト直下の `.editorconfig` と `.vscode/settings.json` で `*.cs` を UTF-8（BOM 付き）・CRLF に固定）
+  2. タグ Dot・Enemy を登録（Unity は読み込み時に覚えていたが、ファイルには保存されていなかった）
   3. プレイヤーのプレハブを作り、GameScene に置く
-  4. 入力を新しい仕組みで書き直す（Player.cs の移動、SceneChanger.cs の画面切り替え）
-  5. ビルドのシーン一覧を登録（タイトル → ゲーム → 勝ち／負け → タイトル）
-  6. Unity で再生して確かめる（敵の追跡、勝ち、負け）
+  4. 入力を新しい仕組みで書き直す（Player.cs、SceneChanger.cs、EventSystem 2 つ）
+  5. ビルドのシーン一覧を登録
+  6. Unity で再生して確かめる
 - **段階B: スマホで遊べるようにする**: 画面のスティック、キーボードの切り替えスイッチ、Game ビューの縦長固定、タイトル・勝ち負け画面のタップ、縦画面と迷路の収め方、WebGL に切り替えて実機確認、必要なら敵の速さなどで難易度調整
+- **段階C の一部を先に実施（2026-10-15、ユーザーの依頼）**: 生徒の作業を減らす提案のうち、A（プレイヤー設定）は完成、C（ステージ作りの安全策）は依頼済みで未着手、D（授業用メニュー）は返事待ち。B（マテリアルを名前の一覧から選ぶ形）は**不採用**。ユーザーの希望で、マテリアルはドラッグで入れ、間違ったもの（床など）も入れられるままにする
+  - **A: プレイヤー設定** — 生徒が触るのは `Assets/プレイヤー設定.asset` の 10 欄だけ（見た目 5: 体の色・目・髪・剣と盾・弓矢、モーション 5: 待機・歩き・走り・勝ち・負け）。仕組み: Player.prefab の 16 の Renderer には受け皿のマテリアル `Assets/Prefab/PlayerMaterial/Player_*.mat`（5 個）が貼ってあり、`PlayerSettings.OnValidate` が選ばれたマテリアルの中身（シェーダー・値・描画順）を受け皿に写す。シーンやプレハブは書き換わらないので、「シーンの中だけ変わった」事故が起きない。モーションは Player.cs が毎フレーム設定から読む（再生中に変えてもすぐ効き、止めても消えない）。EditScene のプレイヤーは Player.prefab に置き換え、ボタン 5 つをつなぎ直した。項目名の日本語表示は `LabelAttribute` ＋ `Editor/LabelDrawer`。確認: 編集中・再生中の反映、GameScene への反映、再生停止後も残ること、シーンが変更扱いにならないこと
+  - **A の見直し（2026-10-15、ユーザーの依頼）**: 「触り心地は良いが、良すぎる。体験としてはもっとわちゃわちゃさせたい」。設定ファイルは残したうえで、**生徒は Scene ビューのキャラクターの部品にマテリアルを直接ドラッグ**し、**モーションは Player スクリプトの 5 欄（インスペクター）に入れる**形にした（ユーザーが案B を選択。案C「EditScene に 5 人並べて各人に Animator Controller をドラッグ」は、B を試して物足りなければ上乗せする。C は B の欄に書き込む形で作れるので無駄にならない）
+    - `Assets/Script/Editor/PlayerPrefabSync.cs`: `ObjectChangeEvents` で、プレイヤーの Renderer の `m_Materials` と Player の `AnimIdle`〜`AnimLose` の変更を拾い、編集中は `PrefabUtility.ApplyPropertyOverride` で Player.prefab に書き込む（EditScene・GameScene のどちらで変えても反映）。**再生中の変更も残す**（ユーザーの選択）: 再生中は覚えておき、再生を止めたとき（EnteredEditMode）に Player.prefab に書き込む。**再生中はプレイヤーが Player.prefab のインスタンスと判定されない**（`GetPrefabAssetPathOfNearestInstanceRoot` が空）ので、再生中は Player コンポーネントの有無だけで対象にしている
+    - メニュー「授業 > プレイヤーの見た目とモーションを最初に戻す」: 部品を受け皿のマテリアルに戻し、モーション欄を「プレイヤー設定」のモーションの値にする（確認の画面あり。中身は `PlayerPrefabSync.ResetToDefault()`）
+    - Player.cs: モーションは自分の 5 欄から読む（欄名は日本語表示）。「プレイヤー設定」のモーション欄は「最初に戻す」専用になった
+    - 確認（2026-10-15、Unity で実行。ドラッグの代わりに SerializedObject で、元に戻す操作に記録される変更をした）: 編集中の髪の変更 → プレハブへ反映・シーンの差分なし／編集中のモーション欄の変更 → 反映／再生中の盾とモーションの変更 → 停止後にプレハブへ反映／GameScene に引き継がれる／最初に戻す → 戻る。Scene ビューへの実際のドラッグも、ユーザーが試して問題なし（2026-10-15）
+    - 「プレイヤー設定」のモーション欄は idle1・walk1・run1・win1・lose1 に戻した（2026-10-15、ユーザーの依頼）。**見た目の欄は、ユーザーが試した色（体 m_body_blue、髪 m_hair_red1、目 m_eyes_darkPurple など）のまま**で、受け皿の色＝配布時の最初の見た目もこの色になっている
+  - **持ち物の表示（2026-10-15）**: モーションのデータ（全 24 個）に部品の表示スイッチ（Renderer の m_Enabled）が入っていて、再生すると弓・矢筒・矢 3 本・短剣・氷の杖が消える（win2・win4・win7 は剣・盾・マントも消える）。編集中は全部見える（モーションが適用されないため）。ユーザーの判断で「**常に全部表示**」に決定（試したら違和感がなかった。win2/4/7 で剣・盾・マントが出るのも可）。Player.cs の `LateUpdate` で全 Renderer の enabled を毎フレーム true に戻している。切り替えのチェックは付けない（ユーザーの判断）
+  - **C: ステージ作りの安全策**（予定）— 迷路の壁と床を選べない・動かせないようにする、再生開始時の自動点検（星の数、迷路の外、敵が歩ける場所か、スタートに近すぎないか）、敵と星の高さを床にそろえる、置く部品を「ステージ部品」フォルダにまとめる
+  - **D: 授業用メニュー** — **入れない**（2026-10-15、ユーザーの判断）。上部メニューの「授業」には「プレイヤーの見た目とモーションを最初に戻す」だけがある
 - **段階C: 授業で使いやすく整える**: 色とモーションの選びやすさ、EditScene を残すか、敵と星の置き場所、不要物（EditPlayer.cs、ユニティちゃんの見本）の片付け
 - その後: 一括ビルドツール
 

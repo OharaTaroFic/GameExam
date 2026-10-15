@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour
@@ -16,12 +17,15 @@ public class SceneChanger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Submit"))
+        var keyboard = Keyboard.current;
+        if (keyboard == null) { return; }
+
+        if (keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
         {
             SceneManager.LoadScene(nextSceneName);
         }
 
-        if (Input.GetKey(KeyCode.Escape))
+        if (keyboard.escapeKey.isPressed)
         {
             Application.Quit();
         }

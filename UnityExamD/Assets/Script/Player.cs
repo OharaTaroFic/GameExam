@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /*State.*/
@@ -30,15 +31,22 @@ public class Player : MonoBehaviour
     //コンポーネント
     CharacterController _characterController;
     Animator _animator;
+    //入力
+    InputAction _moveAction;//移動の入力（スティックとキーボード）
     //パラメータ
     public float MoveSpeed = 5f;//移動速度
     public float RotationSpeed = 360f;//回転速度 
+    //見た目の設定（プレイヤー設定ファイル）
+    public PlayerSettings Settings;
     //アニメーションコントローラー
-    public RuntimeAnimatorController AnimIdle;//待機アニメーション
-    public RuntimeAnimatorController AnimWalk;//歩行アニメーション
-    public RuntimeAnimatorController AnimRun;//走行アニメーション
-    public RuntimeAnimatorController AnimWin;//勝利時のアニメーション
-    public RuntimeAnimatorController AnimLose;//敗北時のアニメーション
+    [Header("モーション（Animator Controller を入れる）")]
+    [Label("待機")] public RuntimeAnimatorController AnimIdle;//待機アニメーション
+    [Label("歩き")] public RuntimeAnimatorController AnimWalk;//歩行アニメーション
+    [Label("走り")] public RuntimeAnimatorController AnimRun;//走行アニメーション
+    [Label("勝ち")] public RuntimeAnimatorController AnimWin;//勝利時のアニメーション
+    [Label("負け")] public RuntimeAnimatorController AnimLose;//敗北時のアニメーション
+    //モーションが隠す持ち物（弓・矢・短剣など）も、常に表示するため
+    Renderer[] _renderers;
 
     // Start is called before the first frame update
     void Start()
@@ -54,6 +62,36 @@ public class Player : MonoBehaviour
         //コンポーネントの取得
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
+        _renderers = GetComponentsInChildren<Renderer>(true);
+        //移動の入力を作る
+        _moveAction = new InputAction("Move", InputActionType.Value);
+        _moveAction.AddBinding("<Gamepad>/leftStick");//スティック
+        _moveAction.AddCompositeBinding("2DVector")//キーボード（WASD）
+            .With("Up", "<Keyboard>/w")
+            .With("Down", "<Keyboard>/s")
+            .With("Left", "<Keyboard>/a")
+            .With("Right", "<Keyboard>/d");
+        _moveAction.AddCompositeBinding("2DVector")//キーボード（矢印キー）
+            .With("Up", "<Keyboard>/upArrow")
+            .With("Down", "<Keyboard>/downArrow")
+            .With("Left", "<Keyboard>/leftArrow")
+            .With("Right", "<Keyboard>/rightArrow");
+        _moveAction.Enable();
+        //見た目を設定どおりにする
+        if (Settings != null) { Settings.Apply(); }
+    }
+
+    void OnDestroy()
+    {
+        //移動の入力を片付ける
+        _moveAction?.Dispose();
+    }
+
+    //モーションが部品を隠したあとに呼ばれる
+    void LateUpdate()
+    {
+        //モーションが隠した持ち物を、表示し直す
+        foreach (var r in _renderers) { r.enabled = true; }
     }
 
     // Update is called once per frame
@@ -113,7 +151,8 @@ public class Player : MonoBehaviour
     void GameUpdate()
     {
         //入力値から移動ベクトルを作成
-        Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        Vector2 input = _moveAction.ReadValue<Vector2>();
+        Vector3 direction = new Vector3(input.x, 0, input.y);
 
         //作成した移動ベクトルの大きさで現在のステートを決める。
         if (direction.sqrMagnitude < 0.01f) { _playerState = PlayerState.Idle; }
