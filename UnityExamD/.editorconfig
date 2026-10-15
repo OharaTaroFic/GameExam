@@ -1,0 +1,6 @@
+# 生徒が Visual Studio で編集しても Shift-JIS で保存されないようにする
+root = true
+
+[*.cs]
+charset = utf-8-bom
+end_of_line = crlf

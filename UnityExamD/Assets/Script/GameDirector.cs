@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,10 +7,10 @@ public class GameDirector : MonoBehaviour
 {
     void Update()
     {
-        //ƒQ[ƒ€‰æ–Êã‚ÌDot‚Ì”‚ª0ŒÂ‚É‚È‚Á‚½‚Ìˆ—
+        //ã‚²ãƒ¼ãƒ ç”»é¢ä¸Šã®Dotã®æ•°ãŒ0å€‹ã«ãªã£ãŸæ™‚ã®å‡¦ç†
         if (GameObject.FindGameObjectsWithTag("Dot").Length == 0)
         {
-            //ƒQ[ƒ€ƒNƒŠƒA‚ÉˆÚ“®
+            //ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢ã«ç§»å‹•
             SceneManager.LoadScene("WinScene");
         }
     }

@@ -1,13 +1,13 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class EditPlayer : MonoBehaviour
 {
-    //ƒpƒ‰ƒ[ƒ^
-    public float MoveSpeed = 5f;//ˆÚ“®‘¬“x
-    public float RotationSpeed = 360f;//‰ñ“]‘¬“x 
+    //ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
+    public float MoveSpeed = 5f;//ç§»å‹•é€Ÿåº¦
+    public float RotationSpeed = 360f;//å›è»¢é€Ÿåº¦ 
     enum State//State.
     {
         Idle,
@@ -17,13 +17,13 @@ public class EditPlayer : MonoBehaviour
         Lose
     }
     State _playerState;
-    //ƒAƒjƒ[ƒVƒ‡ƒ“ƒRƒ“ƒgƒ[ƒ‰[
-    public RuntimeAnimatorController IdleAnim;//‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController WalkAnim;//•àsƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController RunAnim;//‘–sƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController WinAnim;//Ÿ—˜‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController LoseAnim;//”s–k‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-    //ƒRƒ“ƒ|[ƒlƒ“ƒg
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
+    public RuntimeAnimatorController IdleAnim;//å¾…æ©Ÿã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController WalkAnim;//æ­©è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController RunAnim;//èµ°è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController WinAnim;//å‹åˆ©æ™‚ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController LoseAnim;//æ•—åŒ—æ™‚ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    //ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
     CharacterController _characterController;
     Animator _animator;
 
@@ -32,49 +32,49 @@ public class EditPlayer : MonoBehaviour
     {
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
-        _playerState = State.Idle;//‰Šúó‘Ô‚ğIdle‚É‚·‚é
+        _playerState = State.Idle;//åˆæœŸçŠ¶æ…‹ã‚’Idleã«ã™ã‚‹
         _animator.runtimeAnimatorController = IdleAnim;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //“ü—Í’l‚©‚çˆÚ“®ƒxƒNƒgƒ‹‚ğì¬
+        //å…¥åŠ›å€¤ã‹ã‚‰ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’ä½œæˆ
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        //ì¬‚µ‚½ˆÚ“®ƒxƒNƒgƒ‹‚Ì‘å‚«‚³‚ÅŒ»İ‚ÌƒXƒe[ƒg‚ğŒˆ‚ß‚éB
+        //ä½œæˆã—ãŸç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®å¤§ãã•ã§ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æ±ºã‚ã‚‹ã€‚
         if (direction.sqrMagnitude < 0.01f) { _playerState = State.Idle; }
         if (direction.sqrMagnitude > 0.01f) { _playerState = State.Walk; }
         if (direction.sqrMagnitude > 0.98f) { _playerState = State.Run; }
 
-        //State‚É‰‚¶‚½ˆ—
-        //ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌØ‚è‘Ö‚¦
-        if (_playerState == State.Idle)//‘Ò‹@
+        //Stateã«å¿œã˜ãŸå‡¦ç†
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
+        if (_playerState == State.Idle)//å¾…æ©Ÿ
         {
-            //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğIdle‚É‚·‚é
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’Idleã«ã™ã‚‹
             _animator.runtimeAnimatorController = IdleAnim;
         }
-        else if(_playerState == State.Walk)//•às
+        else if(_playerState == State.Walk)//æ­©è¡Œ
         {
-            //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğWalk‚É‚·‚é
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’Walkã«ã™ã‚‹
             _animator.runtimeAnimatorController = WalkAnim;
            
         }
-        else if (_playerState == State.Run)//‘–‚é
+        else if (_playerState == State.Run)//èµ°ã‚‹
         {
-            //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğWalk‚É‚·‚é
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’Walkã«ã™ã‚‹
             _animator.runtimeAnimatorController = RunAnim;
         }
-        //is•ûŒü‚ğŒü‚­
-        if(_playerState == State.Walk || _playerState == State.Run)//•às‚©‘–‚é‚È‚ç
+        //é€²è¡Œæ–¹å‘ã‚’å‘ã
+        if(_playerState == State.Walk || _playerState == State.Run)//æ­©è¡Œã‹èµ°ã‚‹ãªã‚‰
         {
-            //is•ûŒü‚ÌƒxƒNƒgƒ‹‚ğì¬
+            //é€²è¡Œæ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’ä½œæˆ
             Vector3 forward = Vector3.Slerp(transform.forward, direction, RotationSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));
-            //is•ûŒü‚ğŒü‚­
+            //é€²è¡Œæ–¹å‘ã‚’å‘ã
             transform.LookAt(transform.position + forward);
         }
 
-        //ˆÚ“®•ûŒü‚ÉˆÚ“®
+        //ç§»å‹•æ–¹å‘ã«ç§»å‹•
         _characterController.Move(direction * MoveSpeed * Time.deltaTime);
 
        
@@ -82,11 +82,11 @@ public class EditPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Dot‚É‚Ô‚Â‚©‚Á‚½‚Ìˆ—
+        // Dotã«ã¶ã¤ã‹ã£ãŸæ™‚ã®å‡¦ç†
         if (other.tag == "Dot")
         {
-            Debug.Log("Dot‚É‚Ô‚Â‚©‚Á‚½I");
-            // ‘ÌŒ±‡@FDot‚ğÁ‚»‚¤(Destroy)
+            Debug.Log("Dotã«ã¶ã¤ã‹ã£ãŸï¼");
+            // ä½“é¨“â‘ ï¼šDotã‚’æ¶ˆãã†(Destroy)
             Destroy(other.gameObject);
         }
 

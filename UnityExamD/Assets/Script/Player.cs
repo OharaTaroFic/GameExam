@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,33 +25,33 @@ enum PlayerState//State.
 public class Player : MonoBehaviour
 {
     //State.
-    SceneState _sceneState;//ƒV[ƒ“‚Ìó‘Ô
-    PlayerState _playerState;//ƒvƒŒƒCƒ„[‚Ìó‘Ô
-    //ƒRƒ“ƒ|[ƒlƒ“ƒg
+    SceneState _sceneState;//ã‚·ãƒ¼ãƒ³ã®çŠ¶æ…‹
+    PlayerState _playerState;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹
+    //ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
     CharacterController _characterController;
     Animator _animator;
-    //ƒpƒ‰ƒ[ƒ^
-    public float MoveSpeed = 5f;//ˆÚ“®‘¬“x
-    public float RotationSpeed = 360f;//‰ñ“]‘¬“x 
-    //ƒAƒjƒ[ƒVƒ‡ƒ“ƒRƒ“ƒgƒ[ƒ‰[
-    public RuntimeAnimatorController AnimIdle;//‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController AnimWalk;//•àsƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController AnimRun;//‘–sƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController AnimWin;//Ÿ—˜‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-    public RuntimeAnimatorController AnimLose;//”s–k‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+    //ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
+    public float MoveSpeed = 5f;//ç§»å‹•é€Ÿåº¦
+    public float RotationSpeed = 360f;//å›è»¢é€Ÿåº¦ 
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
+    public RuntimeAnimatorController AnimIdle;//å¾…æ©Ÿã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController AnimWalk;//æ­©è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController AnimRun;//èµ°è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController AnimWin;//å‹åˆ©æ™‚ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    public RuntimeAnimatorController AnimLose;//æ•—åŒ—æ™‚ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 
     // Start is called before the first frame update
     void Start()
     {
-        //Œ»İ‚ÌƒV[ƒ“‚ğæ“¾Debug.Log("EditScene!"); 
+        //ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã‚’å–å¾—Debug.Log("EditScene!"); 
         var scene = SceneManager.GetActiveScene();
-        //ƒV[ƒ“–¼‚©‚çŒ»İ‚Ìó‘Ô‚ğŒˆ’è
+        //ã‚·ãƒ¼ãƒ³åã‹ã‚‰ç¾åœ¨ã®çŠ¶æ…‹ã‚’æ±ºå®š
         if (scene.name == "EditScene") { _sceneState = SceneState.EditScene; Debug.Log("EditScene!"); }
         else if (scene.name == "GameScene") { _sceneState = SceneState.GameScene; Debug.Log("GameScene!"); }
         else if (scene.name == "TitleScene") { _sceneState = SceneState.TitleScene; Debug.Log("TitleScene!"); }
         else if (scene.name == "WinScene") { _sceneState = SceneState.WinScene; Debug.Log("WinScene!"); }
         else if (scene.name == "LoseScene") { _sceneState = SceneState.LoseScene; Debug.Log("LoseScene!"); }
-        //ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìæ“¾
+        //ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®å–å¾—
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
     }
@@ -81,10 +81,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    /*ŠeƒV[ƒ“—p‚ÌƒAƒbƒvƒf[ƒg*/
+    /*å„ã‚·ãƒ¼ãƒ³ç”¨ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ*/
     void EditUpdate()
     {
-        //Œ»İ‚ÌState‚ÅƒAƒjƒ[ƒVƒ‡ƒ“‚ğŒˆ’è
+        //ç¾åœ¨ã®Stateã§ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ±ºå®š
         switch (_playerState)
         {
             case PlayerState.Idle:
@@ -112,42 +112,42 @@ public class Player : MonoBehaviour
     }
     void GameUpdate()
     {
-        //“ü—Í’l‚©‚çˆÚ“®ƒxƒNƒgƒ‹‚ğì¬
+        //å…¥åŠ›å€¤ã‹ã‚‰ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’ä½œæˆ
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        //ì¬‚µ‚½ˆÚ“®ƒxƒNƒgƒ‹‚Ì‘å‚«‚³‚ÅŒ»İ‚ÌƒXƒe[ƒg‚ğŒˆ‚ß‚éB
+        //ä½œæˆã—ãŸç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®å¤§ãã•ã§ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æ±ºã‚ã‚‹ã€‚
         if (direction.sqrMagnitude < 0.01f) { _playerState = PlayerState.Idle; }
         if (direction.sqrMagnitude > 0.01f) { _playerState = PlayerState.Walk; }
         if (direction.sqrMagnitude > 0.98f) { _playerState = PlayerState.Run; }
 
-        //State‚É‰‚¶‚½ˆ—
-        //ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌØ‚è‘Ö‚¦
-        if (_playerState == PlayerState.Idle)//‘Ò‹@
+        //Stateã«å¿œã˜ãŸå‡¦ç†
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
+        if (_playerState == PlayerState.Idle)//å¾…æ©Ÿ
         {
-            //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğIdle‚É‚·‚é_
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’Idleã«ã™ã‚‹_
             _animator.runtimeAnimatorController = AnimIdle;
         }
-        else if (_playerState == PlayerState.Walk)//•às
+        else if (_playerState == PlayerState.Walk)//æ­©è¡Œ
         {
-            //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğWalk‚É‚·‚é
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’Walkã«ã™ã‚‹
             _animator.runtimeAnimatorController = AnimWalk;
 
         }
-        else if (_playerState == PlayerState.Run)//‘–‚é
+        else if (_playerState == PlayerState.Run)//èµ°ã‚‹
         {
-            //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğWalk‚É‚·‚é
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’Walkã«ã™ã‚‹
             _animator.runtimeAnimatorController = AnimRun;
         }
-        //is•ûŒü‚ğŒü‚­
-        if (_playerState == PlayerState.Walk || _playerState == PlayerState.Run)//•às‚©‘–‚é‚È‚ç
+        //é€²è¡Œæ–¹å‘ã‚’å‘ã
+        if (_playerState == PlayerState.Walk || _playerState == PlayerState.Run)//æ­©è¡Œã‹èµ°ã‚‹ãªã‚‰
         {
-            //is•ûŒü‚ÌƒxƒNƒgƒ‹‚ğì¬
+            //é€²è¡Œæ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’ä½œæˆ
             Vector3 forward = Vector3.Slerp(transform.forward, direction, RotationSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));
-            //is•ûŒü‚ğŒü‚­
+            //é€²è¡Œæ–¹å‘ã‚’å‘ã
             transform.LookAt(transform.position + forward);
         }
 
-        //ˆÚ“®•ûŒü‚ÉˆÚ“®
+        //ç§»å‹•æ–¹å‘ã«ç§»å‹•
         _characterController.Move(direction * MoveSpeed * Time.deltaTime);
     }
     void WinUpdate()
@@ -159,47 +159,47 @@ public class Player : MonoBehaviour
         GetComponent<Animator>().runtimeAnimatorController = AnimLose;
     }
 
-    /*ƒ{ƒ^ƒ“‘€ì—p‚Ìƒƒ\ƒbƒh*/
+    /*ãƒœã‚¿ãƒ³æ“ä½œç”¨ã®ãƒ¡ã‚½ãƒƒãƒ‰*/
     public void OnClickIdleButton()
     {
-        //ƒAƒjƒ[ƒVƒ‡ƒ“•ÏX
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¤‰æ›´
         _playerState = PlayerState.Idle;
     }
     public void OnClickWalkButton()
     {
-        //ƒAƒjƒ[ƒVƒ‡ƒ“•ÏX
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¤‰æ›´
         _playerState = PlayerState.Walk;
     }
     public void OnClickRunButton()
     {
-        //ƒAƒjƒ[ƒVƒ‡ƒ“•ÏX
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¤‰æ›´
         _playerState = PlayerState.Run;
     }
     public void OnClickWinButton()
     {
-        //ƒAƒjƒ[ƒVƒ‡ƒ“•ÏX
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¤‰æ›´
         _playerState = PlayerState.Win;
     }
     public void OnClickLoseButton()
     {
-        //ƒAƒjƒ[ƒVƒ‡ƒ“•ÏX
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¤‰æ›´
         _playerState = PlayerState.Lose;
     }
 
-    /*“–‚½‚è”»’è*/
+    /*å½“ãŸã‚Šåˆ¤å®š*/
     private void OnTriggerEnter(Collider other)
     {
-        // Dot‚É‚Ô‚Â‚©‚Á‚½‚Ìˆ—
+        // Dotã«ã¶ã¤ã‹ã£ãŸæ™‚ã®å‡¦ç†
         if (other.tag == "Dot")
         {
-            Debug.Log("Dot‚É‚Ô‚Â‚©‚Á‚½I");
-            // ‘ÌŒ±‡@FDot‚ğÁ‚»‚¤(Destroy)
+            Debug.Log("Dotã«ã¶ã¤ã‹ã£ãŸï¼");
+            // ä½“é¨“â‘ ï¼šDotã‚’æ¶ˆãã†(Destroy)
             Destroy(other.gameObject);
         }
 
         if (other.tag == "Enemy")
         {
-            Debug.Log("Enemy‚É‚Ô‚Â‚©‚Á‚½I");
+            Debug.Log("Enemyã«ã¶ã¤ã‹ã£ãŸï¼");
             SceneManager.LoadScene("LoseScene");
         }
     }

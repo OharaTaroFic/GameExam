@@ -1,3 +1,7 @@
 {
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "[csharp]": {
+        "files.encoding": "utf8bom",
+        "files.eol": "\r\n"
+    }
 }
