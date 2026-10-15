@@ -28,6 +28,8 @@ public class PlayerSettings : ScriptableObject
     [HideInInspector] public Material HairTarget;
     [HideInInspector] public Material SwordShieldTarget;
     [HideInInspector] public Material BowArrowTarget;
+    //見た目の欄が空のときに使う、何も付いていない灰色のマテリアル（さわらない）
+    [HideInInspector] public Material PlainMaterial;
 
     //インスペクターで値が変わったとき
     void OnValidate()
@@ -45,8 +47,10 @@ public class PlayerSettings : ScriptableObject
         Copy(BowArrow, BowArrowTarget);
     }
 
-    static void Copy(Material from, Material to)
+    void Copy(Material from, Material to)
     {
+        //欄が空なら、何も付いていない灰色にする
+        if (from == null) { from = PlainMaterial; }
         if (from == null || to == null || from == to) { return; }
         to.shader = from.shader;
         to.CopyPropertiesFromMaterial(from);

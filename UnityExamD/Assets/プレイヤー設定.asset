@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b61e9d76479bd145a2d0fbf768e4e03, type: 3}
   m_Name: "\u30D7\u30EC\u30A4\u30E4\u30FC\u8A2D\u5B9A"
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
-  Body: {fileID: 2100000, guid: 8d6672d59485eb14ca04c7e7e41610db, type: 2}
-  Eyes: {fileID: 2100000, guid: ac2fba368de75b3468c195537ba64730, type: 2}
-  Hair: {fileID: 2100000, guid: 13afc01bd4e2f464b91e4a8806b7a19f, type: 2}
-  SwordShield: {fileID: 2100000, guid: aaa110bd38cc4c84ea4bbfeb074288c7, type: 2}
-  BowArrow: {fileID: 2100000, guid: 5f6bd256a481c8f4d9682935821688c6, type: 2}
+  Body: {fileID: 0}
+  Eyes: {fileID: 0}
+  Hair: {fileID: 0}
+  SwordShield: {fileID: 0}
+  BowArrow: {fileID: 0}
   Idle: {fileID: 9100000, guid: be96ee4549eedd847bbbec32036ebccd, type: 2}
   Walk: {fileID: 9100000, guid: 6830e7e82d57b4249a5a9eda98097b0d, type: 2}
   Run: {fileID: 9100000, guid: de1eac56588292541925d8ad558a72d9, type: 2}
@@ -27,3 +27,4 @@ MonoBehaviour:
   HairTarget: {fileID: 2100000, guid: aa1109e39467f6541aa64aac45610824, type: 2}
   SwordShieldTarget: {fileID: 2100000, guid: 0faba5ffc9f919d449d90d4ff652b452, type: 2}
   BowArrowTarget: {fileID: 2100000, guid: 94bdd5a603bbfad4289ed367d8b41d71, type: 2}
+  PlainMaterial: {fileID: 2100000, guid: b0cc966d3104d284ca24917fcf207421, type: 2}
