@@ -22,6 +22,9 @@
   - 最初は 速い（赤）も置いたが、プレイヤー（当時 5）より速く、ユーザーが「クリアできない」。外した
 - **プレイヤーの速さ 5 → 6**（Player.prefab の MoveSpeed）。敵の種類ごとの速さ（遅い 2・普通 4・速い 8）は変えていない
 - これで、ユーザーがスマホで「通しで良い感じにプレイできる」と確認
+- **使われていない物の片付け（A）**: 書き出す 4 シーン・EditScene・生徒が置く部品・Player・PlayerSettings・`Material`/`Animators`（生徒が選ぶ材料）・スクリプト・`InputSystem_Actions.inputactions`（プロジェクトの入力の設定が参照）から依存をたどり、どこからも使われていない 62 ファイルを削除: ユニティちゃんの未使用のモーション 24・見本のプレハブ 13・見本のモーション設定 3・壊れたマテリアル 9、`Unity_Icon.png`、`AlphaMaskURP.shader`、`UI/title.png・win.png・lose.png`（切り抜き前の元画像）、`Prefab/MiniLevel.prefab`・`DotBase.prefab`、`Readme.asset`・`TutorialInfo`、`Script/EditPlayer.cs`、空の `Resources`。削除後、全シーン・全プレハブで壊れた参照 0、StageChecker 0 を確認
+  - **URP の片付け（B）**: シーンのカメラ・ライトの URP 用の部品 3 個（GameScene 2、EditScene 1）を外し、`Assets/Settings`（URP の設定 7 個）を消し、`Packages/manifest.json` から `com.unity.render-pipelines.universal` を外した（core・shadergraph・universal-config も一緒に外れた）。壊れた参照 0・壊れたマテリアル 0・StageChecker 0、WebGL の書き出し成功（80MB → 64MB）を確認。UnityChan のフォルダ（敵と床の素材）は残す（ユーザーの判断）
+  - 残した: 使っていないパッケージ（Visual Scripting・Timeline・Multiplayer Center・Collab Proxy・Rider 連携・Unity Pipeline）、`Material` の重複や名前のおかしい色（`mat_*`、`m_floor*`、`m_body_blue 8`、`m_bowArrow _blue2`、`m_blue` など）と `Animators/Enemy`。どれも未決
 
 ## 0.7 スマホで落ちる件と、ビルトインへの切り替え（2026-10-16、MahiroDesktop）
 
