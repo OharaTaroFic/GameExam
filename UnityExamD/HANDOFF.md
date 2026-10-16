@@ -6,9 +6,16 @@
 
 **今いるブランチは `builtin`**（描画の方式を URP からビルトインに切り替えた。「0.7」）。`main` は URP のまま。
 
-1. **`builtin` を `main` に取り込むか、プッシュをどうするか決める**（ユーザーはスマホで「通しで良い感じにプレイできる」と確認済み。2026-10-16）
-2. **配る前に、試しの状態を戻す**: プレイヤーの試し塗り（下の「0.8」）は「授業 > プレイヤーの見た目とモーションを最初に戻す」で灰色に戻す。GameScene の敵と星の試しの配置をどうするか（生徒が置く前の初期状態）を決める
-3. 難易度: プレイヤーの速さ 6・速い敵を置かない配置で「通しで良い感じ」。速い敵（8）はプレイヤーより速く、置くとほぼクリアできない。生徒が置ける部品として残すか、速さを下げるか、近づいたときだけ追うようにするかは未決
+**2026-10-16 夜にユーザーが決めたこと:**
+- `builtin` は `main` に取り込んだ（描画の方式はビルトインで確定）
+- **速い敵（8）は残す。**「クソゲーを作るほうが盛り上がる」
+- **生徒が置く前の初期状態は「遅い敵 1 体・星 1 個」**。ただし、もう少しゲームを調整してからその状態にする（今は試しの配置のまま）
+- **AI（Unity MCP）のパッケージは、最後の最後に外す**
+- EditScene は今のまま。一括ビルドはその後で考える
+
+1. **片付けの続き D**: 生徒が選ぶ色（`Assets/Material`）とモーション（`Assets/Animators`）の一覧の整理（重複・名前のおかしい色、敵用の `Enemy` が混ざっている件）
+2. ゲームの調整（ユーザーが続ける）→ 済んだら GameScene を初期状態（遅い敵 1・星 1）にし、プレイヤーの試し塗りを「最初に戻す」で灰色に戻す
+3. 最後に AI（Unity MCP）のパッケージを外す
 3. その後は段階C の残り → 配る前の準備（Unity MCP のパッケージを外す、URP のパッケージと設定ファイルの片付け、など） → 一括ビルドツール
 4. ユーザーが確かめていないもの: タイトル・勝ち・負け画面のタップの動作（MCP からは入力をまねても確かめられない）。キーボードの切り替えはユーザーが確認済み
 
@@ -24,7 +31,8 @@
 - これで、ユーザーがスマホで「通しで良い感じにプレイできる」と確認
 - **使われていない物の片付け（A）**: 書き出す 4 シーン・EditScene・生徒が置く部品・Player・PlayerSettings・`Material`/`Animators`（生徒が選ぶ材料）・スクリプト・`InputSystem_Actions.inputactions`（プロジェクトの入力の設定が参照）から依存をたどり、どこからも使われていない 62 ファイルを削除: ユニティちゃんの未使用のモーション 24・見本のプレハブ 13・見本のモーション設定 3・壊れたマテリアル 9、`Unity_Icon.png`、`AlphaMaskURP.shader`、`UI/title.png・win.png・lose.png`（切り抜き前の元画像）、`Prefab/MiniLevel.prefab`・`DotBase.prefab`、`Readme.asset`・`TutorialInfo`、`Script/EditPlayer.cs`、空の `Resources`。削除後、全シーン・全プレハブで壊れた参照 0、StageChecker 0 を確認
   - **URP の片付け（B）**: シーンのカメラ・ライトの URP 用の部品 3 個（GameScene 2、EditScene 1）を外し、`Assets/Settings`（URP の設定 7 個）を消し、`Packages/manifest.json` から `com.unity.render-pipelines.universal` を外した（core・shadergraph・universal-config も一緒に外れた）。壊れた参照 0・壊れたマテリアル 0・StageChecker 0、WebGL の書き出し成功（80MB → 64MB）を確認。UnityChan のフォルダ（敵と床の素材）は残す（ユーザーの判断）
-  - 残した: 使っていないパッケージ（Visual Scripting・Timeline・Multiplayer Center・Collab Proxy・Rider 連携・Unity Pipeline）、`Material` の重複や名前のおかしい色（`mat_*`、`m_floor*`、`m_body_blue 8`、`m_bowArrow _blue2`、`m_blue` など）と `Animators/Enemy`。どれも未決
+  - **使っていないパッケージ（C）**: Visual Scripting・Timeline・Multiplayer Center・Collab Proxy・Rider 連携・Unity Pipeline（試作版）を `manifest.json` から外した。残りは ai.assistant・ai.navigation・ide.visualstudio・inputsystem・test-framework・ugui。壊れた参照 0
+  - 残した: `Material` の重複や名前のおかしい色（`mat_*`、`m_floor*`、`m_body_blue 8`、`m_bowArrow _blue2`、`m_blue` など）と `Animators/Enemy`。どれも未決
 
 ## 0.7 スマホで落ちる件と、ビルトインへの切り替え（2026-10-16、MahiroDesktop）
 

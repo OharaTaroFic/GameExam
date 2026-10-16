@@ -204,7 +204,7 @@ MonoBehaviour:
   MoveSpeed: 6
   RotationSpeed: 360
   Settings: {fileID: 11400000, guid: 691a944d6b0ee2143bc3c86b6c8890c0, type: 2}
-  AnimIdle: {fileID: 9100000, guid: be96ee4549eedd847bbbec32036ebccd, type: 2}
+  AnimIdle: {fileID: 9100000, guid: 67e5d01c255a9c6458e123b67afcdad6, type: 2}
   AnimWalk: {fileID: 9100000, guid: 6830e7e82d57b4249a5a9eda98097b0d, type: 2}
   AnimRun: {fileID: 9100000, guid: de1eac56588292541925d8ad558a72d9, type: 2}
   AnimWin: {fileID: 9100000, guid: d1215d04398ae514f85f54709d4a31ef, type: 2}
