@@ -65,17 +65,20 @@ public class Player : MonoBehaviour
         _renderers = GetComponentsInChildren<Renderer>(true);
         //移動の入力を作る
         _moveAction = new InputAction("Move", InputActionType.Value);
-        _moveAction.AddBinding("<Gamepad>/leftStick");//スティック
-        _moveAction.AddCompositeBinding("2DVector")//キーボード（WASD）
-            .With("Up", "<Keyboard>/w")
-            .With("Down", "<Keyboard>/s")
-            .With("Left", "<Keyboard>/a")
-            .With("Right", "<Keyboard>/d");
-        _moveAction.AddCompositeBinding("2DVector")//キーボード（矢印キー）
-            .With("Up", "<Keyboard>/upArrow")
-            .With("Down", "<Keyboard>/downArrow")
-            .With("Left", "<Keyboard>/leftArrow")
-            .With("Right", "<Keyboard>/rightArrow");
+        _moveAction.AddBinding("<Gamepad>/leftStick");//スティック（画面のスティックもこれとして入る）
+        if (DevSettings.KeyboardEnabled)//キーボードは開発用（メニュー「授業 > キーボード操作を使う（開発用）」）
+        {
+            _moveAction.AddCompositeBinding("2DVector")//キーボード（WASD）
+                .With("Up", "<Keyboard>/w")
+                .With("Down", "<Keyboard>/s")
+                .With("Left", "<Keyboard>/a")
+                .With("Right", "<Keyboard>/d");
+            _moveAction.AddCompositeBinding("2DVector")//キーボード（矢印キー）
+                .With("Up", "<Keyboard>/upArrow")
+                .With("Down", "<Keyboard>/downArrow")
+                .With("Left", "<Keyboard>/leftArrow")
+                .With("Right", "<Keyboard>/rightArrow");
+        }
         _moveAction.Enable();
         //見た目を設定どおりにする
         if (Settings != null) { Settings.Apply(); }

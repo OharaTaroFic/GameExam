@@ -3,7 +3,7 @@
 //プレイヤーの見た目とモーションの設定
 //見た目: プレイヤーの部品のうち、受け皿のマテリアルのままの部品に効く
 //（生徒が Scene ビューで直接マテリアルを落とした部品には効かない）
-[CreateAssetMenu(fileName = "プレイヤー設定", menuName = "授業/プレイヤー設定")]
+[CreateAssetMenu(fileName = "PlayerSettings", menuName = "授業/プレイヤー設定")]
 public class PlayerSettings : ScriptableObject
 {
     [Header("見た目（マテリアルを入れる）")]

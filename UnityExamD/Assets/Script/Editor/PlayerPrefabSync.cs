@@ -9,7 +9,7 @@ using UnityEngine;
 public static class PlayerPrefabSync
 {
     const string PrefabPath = "Assets/Player.prefab";
-    const string SettingsPath = "Assets/プレイヤー設定.asset";
+    const string SettingsPath = "Assets/PlayerSettings.asset";
     static readonly string[] MotionFields = { "AnimIdle", "AnimWalk", "AnimRun", "AnimWin", "AnimLose" };
 
     //再生中の変更（再生を止めたときに書き込む）
