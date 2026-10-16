@@ -13,7 +13,7 @@
 - **AI（Unity MCP）のパッケージは、最後の最後に外す**
 - EditScene は今のまま。一括ビルドはその後で考える
 
-1. **片付けの続き D**: 生徒が選ぶ色（`Assets/Material`）とモーション（`Assets/Animators`）の一覧の整理（重複・名前のおかしい色、敵用の `Enemy` が混ざっている件）
+1. ~~片付けの続き D~~ 済み（2026-10-16）: 未使用の色 20 個（古い版の `mat_body_*` など 14・`m_floor1〜4`・`m_body_blue 8`・`m_bowArrow _blue2`）を削除、打ち間違いの名前 5 個を修正（`m_eyes_gold2`・`m_eyes_green2`・`m_eyes_lightblue`・`m_hair_black`・`m_swordShield_blackwhite`）、敵用の `Enemy.controller` を `Assets/Enemy/` に移動。単色の `m_blue`・`m_green`・`m_red` は「間違った色」の候補として残す。**フォルダ分けはしない**（ユーザー: 生徒はフォルダを開くこと自体に頭を使う）。壊れた参照 0
 2. ゲームの調整（ユーザーが続ける）→ 済んだら GameScene を初期状態（遅い敵 1・星 1）にし、プレイヤーの試し塗りを「最初に戻す」で灰色に戻す
 3. 最後に AI（Unity MCP）のパッケージを外す
 3. その後は段階C の残り → 配る前の準備（Unity MCP のパッケージを外す、URP のパッケージと設定ファイルの片付け、など） → 一括ビルドツール
