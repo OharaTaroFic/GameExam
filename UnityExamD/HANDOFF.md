@@ -122,7 +122,7 @@
   - `SceneChanger.cs`: `Pointer.current.press.wasPressedThisFrame`（マウスとタッチの両方）で次の画面へ。画面が出てから 1 秒はタップを受け付けない（負けた瞬間の指でうっかり進まないように）。キーボード（Enter・スペース）は開発用の切り替えがオンのときだけ
   - タップの動作は、MCP からは入力をまねても確かめられない（キーボードと同じ理由）ので、ユーザーに確かめてもらう
 
-- **シーンを開いたときの Scene ビューのカメラ**: `Assets/Script/Editor/SceneViewStart.cs`。GameScene は迷路全体が収まる斜め上（60°）からの見下ろし（迷路の壁を囲む箱の中心から手前へ 2 ずらした点、size = 長い辺 × 0.42。ユーザーの希望で「もう少しアップ」にした）、EditScene はキャラの正面・全身（腰の高さを中心、size 1.4）。Scene ビューの位置は PC ごとの Library に保存されるので、シーンを開いたとき（1 秒間）と、Unity を起動した直後（3 秒間、SessionState で起動ごとに 1 回だけ）にかけ直す。スクリプトの読み直しでは動かさない（作業中にカメラが飛ばないように）。`EditorApplication.delayCall` は Unity の窓が裏にあると動かなかったので、`EditorApplication.update` を使っている
+- **シーンを開いたときの Scene ビューのカメラ**: `Assets/Script/Editor/SceneViewStart.cs`。GameScene は迷路全体が収まる斜め上（60°）からの見下ろし（迷路の壁を囲む箱の中心から手前へ 2 ずらした点、size = 長い辺 × 0.42。ユーザーの希望で「もう少しアップ」にした）、EditScene はキャラの斜め前（正面から右へ 32 度・4 度見下ろす）・全身（腰の高さ 0.85 を中心、size 1.25。2026-10-16 にユーザーが Scene ビューで決めた見え方）。Scene ビューの位置は PC ごとの Library に保存されるので、シーンを開いたとき（1 秒間）と、Unity を起動した直後（3 秒間、SessionState で起動ごとに 1 回だけ）にかけ直す。スクリプトの読み直しでは動かさない（作業中にカメラが飛ばないように）。`EditorApplication.delayCall` は Unity の窓が裏にあると動かなかったので、`EditorApplication.update` を使っている
 
 残り（計画）: WebGL に切り替えて実機確認・難易度調整
 
@@ -199,6 +199,8 @@
 - ゲーム中のカメラ（GameSceneCamera）はプレイヤーの上に 5、後ろに 3 から追いかける近い視点。迷路全体は映らない
 - 床（AlphaMaskURP シェーダー）には、壁やキャラクターの影が落ちていないように見える（画像で見た印象。未確認）
 - NavMesh（敵が歩ける範囲）は GameScene だけが `Assets/GameScene/NavMesh.asset` を使う。EditScene（敵がいない）からは 2026-10-16 に外し、古い共有の `Assets/SceneSetting/NavMesh.asset` は削除した
+- **生徒の色の保護（2026-10-16、`Assets/Script/Editor/MaterialGuard.cs`）**: `Assets/Material/` の .mat を `AssetModificationProcessor.IsOpenForEdit` で「編集できない」にした（部品へのドラッグはできる。プレイヤーの受け皿やプレハブは編集できる）。先生用の切り替え「授業 > 色を編集できるようにする（先生用）」（EditorPrefs、その PC だけ）。色に親が付くと Console に警告を出す。理由: ユーザーが普通に色を塗っていただけなのに、`m_eyes_darkPurple`（親 m_eyes_dark）と `m_eyes_darkBlue`（親 m_bowArrow_red1）が変種になる事故が 2 回起きた（どの操作で起きたかは未特定。推測: 部品を選んだままインスペクター下部のマテリアル欄に別の色を落とした）。2 つとも git で元に戻した。スクリプトから `Material.parent` を代入する場合は防げない（その場合も警告は出る）
+- タイトル・勝ち・負けの画面の黄色い床 `Stage` は、2026-10-16 にユーザーが消した
 - EditScene のボタン（2026-10-16）: CanvasScaler を 1080×1920・match 0.5 に、5 つのボタンを画面の下端（下から 80）に 190×110 で横一列、文字は NotoSansJP 太字 44 で「待機・歩き・走り・勝ち・負け」（Player の欄と同じ言葉）
 - EditScene の 5 つのボタン（待機・歩き・走り・勝ち・負け）は、再生中にモーションを見比べるためのもの
 - EditPlayer.cs はどのシーンでも使われていない。古い `Input.GetAxis` のままで、中の "Lose" というシーン名も誤り

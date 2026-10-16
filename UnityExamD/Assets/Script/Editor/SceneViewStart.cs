@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 //シーンを開いたときに、Scene ビューのカメラを決まった位置にする（そのあとは自由に動かせる）
 //・GameScene: 迷路全体が収まる、斜め上からの見下ろし（敵や星を置きやすい）
-//・EditScene: キャラの正面、全身が収まる距離（マテリアルを部品へドラッグしやすい）
+//・EditScene: キャラの斜め前（正面から右へ約 32 度）、全身が収まる距離（マテリアルを部品へドラッグしやすい）
 //Scene ビューのカメラの位置は PC ごとの Library に保存されるので、シーンを開いたときと、Unity を起動した直後にかける
 //（スクリプトの読み直しのたびには動かさない。作業中にカメラが飛ばないように）
 [InitializeOnLoad]
@@ -65,8 +65,9 @@ public static class SceneViewStart
             var player = GameObject.FindGameObjectWithTag("Player");
             if (player == null) { return; }
             var t = player.transform;
-            //キャラの正面から（キャラが向いている向きの反対側から見る）
-            view.LookAt(t.position + Vector3.up * 0.9f, Quaternion.LookRotation(-t.forward), 1.4f, false, true);
+            //キャラの正面から右へ少し回り込み、わずかに見下ろす（ユーザーが選んだ見え方）
+            float frontYaw = Quaternion.LookRotation(-t.forward).eulerAngles.y;
+            view.LookAt(t.position + Vector3.up * 0.85f, Quaternion.Euler(4f, frontYaw + 32f, 0f), 1.25f, false, true);
         }
     }
 

@@ -55,11 +55,11 @@ PrefabInstance:
     - target: {fileID: -4474122444619396320, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 49ec355b4dc9e764c93ccbde51a6690c, type: 2}
+      objectReference: {fileID: 2100000, guid: e4cbd6ac49d71164198c67e6db413825, type: 2}
     - target: {fileID: -2565121969311997460, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 49ec355b4dc9e764c93ccbde51a6690c, type: 2}
+      objectReference: {fileID: 2100000, guid: 8d6672d59485eb14ca04c7e7e41610db, type: 2}
     - target: {fileID: -2518910438110340177, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -67,11 +67,11 @@ PrefabInstance:
     - target: {fileID: -1776305216867867287, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: b960698771a54204d93b41db4aa14da8, type: 2}
+      objectReference: {fileID: 2100000, guid: 30a2ea74d12b52043951ee248b8cdbd0, type: 2}
     - target: {fileID: -647739218457009938, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 5f6bd256a481c8f4d9682935821688c6, type: 2}
+      objectReference: {fileID: 2100000, guid: 13afc01bd4e2f464b91e4a8806b7a19f, type: 2}
     - target: {fileID: 919132149155446097, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: m_Name
       value: Player
@@ -83,7 +83,7 @@ PrefabInstance:
     - target: {fileID: 1624293046164781569, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: b960698771a54204d93b41db4aa14da8, type: 2}
+      objectReference: {fileID: 2100000, guid: a95a2a504a28ca94990383d87588a66d, type: 2}
     - target: {fileID: 2787740152850613957, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -91,7 +91,7 @@ PrefabInstance:
     - target: {fileID: 3261468878614911603, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 49ec355b4dc9e764c93ccbde51a6690c, type: 2}
+      objectReference: {fileID: 2100000, guid: e3bc8b3db8b4e3a4ba89de6d3fe1e390, type: 2}
     - target: {fileID: 4092352388177310156, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -103,7 +103,7 @@ PrefabInstance:
     - target: {fileID: 6135979168108361793, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: e761da99400f36f438b5ca92b2eb409d, type: 2}
+      objectReference: {fileID: 2100000, guid: f672addb8d26cff43886fd03362bdfad, type: 2}
     - target: {fileID: 6662170933501563670, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -119,7 +119,7 @@ PrefabInstance:
     - target: {fileID: 8076010027752889615, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e98fa4481db71149a80b5473db7925f, type: 2}
+      objectReference: {fileID: 2100000, guid: f0b60a80ce9f29643b1927106e35945e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -206,7 +206,7 @@ MonoBehaviour:
   Settings: {fileID: 11400000, guid: 691a944d6b0ee2143bc3c86b6c8890c0, type: 2}
   AnimIdle: {fileID: 9100000, guid: 67e5d01c255a9c6458e123b67afcdad6, type: 2}
   AnimWalk: {fileID: 9100000, guid: 6830e7e82d57b4249a5a9eda98097b0d, type: 2}
-  AnimRun: {fileID: 9100000, guid: de1eac56588292541925d8ad558a72d9, type: 2}
+  AnimRun: {fileID: 9100000, guid: d7bd048cc8e5b244aad529420fe179fe, type: 2}
   AnimWin: {fileID: 9100000, guid: d1215d04398ae514f85f54709d4a31ef, type: 2}
   AnimLose: {fileID: 9100000, guid: 067a811a8557f8a45a9909a87ad3d327, type: 2}
 --- !u!114 &4315586464039483367
