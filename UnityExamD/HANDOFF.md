@@ -15,6 +15,8 @@
 2. ~~ゲームの調整と、生徒が触る前の状態~~ 済み（2026-10-17）: GameScene を **遅い敵 1 体 (1.83, 0, 14.5)・星 1 個 (4.91, 0.5, 12.84)**（どちらも試しの配置を入れる前の元の位置）にした。プレイヤーは `PlayerPrefabSync.ResetToDefault()`（メニュー「授業 > プレイヤーの見た目とモーションを最初に戻す」と同じ処理）で、部品の色を灰色の受け皿に、モーションを idle1・walk1・run1・win1・lose1 に戻した。5 シーンのプレイヤーに色・モーションの変更が残っていないこと（0 件）、StageChecker 0 件を確認
 3. ~~タイトル・勝ち・負け画面のタップ~~ ユーザーがスマホで確認済み（2026-10-17）
 4. 最後に AI（Unity MCP）のパッケージを外す
+- **実サーバー（fic2022.boo.jp）で動作を確認（2026-10-17）**。起動時に黄色い警告「Content-Type ... Build/WebGL.wasm ... should be "application/wasm"」が 5 秒出る（サーバーが .wasm の種類を伝えていない。遊ぶのに問題はなく、起動が少し遅くなるだけ）。→ OharaServer のルート `.htaccess` に `AddType application/wasm .wasm` を足して直した（OharaServer の b1ec6ef。本番での確認はユーザー）
+- **「タップしてはじめる」のタップで全画面＋縦向き固定（2026-10-17）**: 雛形 `TapToStart/index.html` の幕のタップで、スマホのときだけ `requestFullscreen`（`navigationUI: "hide"`）→ 成功したら `screen.orientation.lock("portrait")`。iPhone の Safari は全画面に対応していないので、そのまま。ホーム画面に追加する形（PWA）は、https と生徒の手間が要るので見送り
 5. 一括ビルドツール（参考: `C:\GitHub\GameExam\Tools\UntiyExamC_ビルドツール`）。書き出しのページは雛形 `TapToStart` を使う
 
 **モデルとエフォート:** Unity を操作して確かめながら進める作業なので **Opus・高**。

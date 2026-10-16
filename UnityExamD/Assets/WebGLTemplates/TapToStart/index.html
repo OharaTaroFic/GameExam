@@ -155,6 +155,18 @@
                   e.preventDefault();
                   tapToStart.style.display = "none";
                   canvas.focus();
+                  //スマホでは全画面にして、縦向きに固定する（ブラウザは、触ったときにしか全画面にさせてくれない。iPhone の Safari は全画面に対応していない）
+                  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    var page = document.documentElement;
+                    var full = page.requestFullscreen || page.webkitRequestFullscreen;
+                    if (full) {
+                      try {
+                        var done = full.call(page, { navigationUI: "hide" });
+                        var lock = () => { if (screen.orientation && screen.orientation.lock) { screen.orientation.lock("portrait").catch(() => {}); } };
+                        if (done && done.then) { done.then(lock).catch(() => {}); } else { lock(); }
+                      } catch (err) { }
+                    }
+                  }
                 }, { once: true });
 #if SHOW_DIAGNOSTICS
                 document.getElementById("diagnostics-icon").onclick = () => {
