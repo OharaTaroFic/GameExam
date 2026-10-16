@@ -31,7 +31,7 @@ public static class PlayerPrefabSync
         {
             if (stream.GetEventType(i) != ObjectChangeKind.ChangeGameObjectOrComponentProperties) { continue; }
             stream.GetChangeGameObjectOrComponentPropertiesEvent(i, out var e);
-            var obj = EditorUtility.InstanceIDToObject(e.instanceId);
+            var obj = EditorUtility.EntityIdToObject(e.instanceId);
             if (obj is GameObject go)
             {
                 foreach (var c in go.GetComponents<Component>()) { Handle(c); }

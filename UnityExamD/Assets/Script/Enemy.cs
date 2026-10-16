@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //壁の中など、歩けない場所に置かれたときや、プレイヤーがいないときは何もしない（エラーを出し続けないように）
+        if (!agent.isOnNavMesh || target == null) { return; }
         // 体験③：敵agentの追跡先(destination)をtargetに設定しよう！
         agent.destination = target.transform.position;
         animator.SetFloat("Speed", agent.velocity.magnitude);
