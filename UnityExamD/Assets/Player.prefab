@@ -209,6 +209,8 @@ MonoBehaviour:
   AnimRun: {fileID: 9100000, guid: d7bd048cc8e5b244aad529420fe179fe, type: 2}
   AnimWin: {fileID: 9100000, guid: d1215d04398ae514f85f54709d4a31ef, type: 2}
   AnimLose: {fileID: 9100000, guid: 067a811a8557f8a45a9909a87ad3d327, type: 2}
+  BaseController: {fileID: 9100000, guid: a8d059a1be2683844b10f6816c59ad67, type: 2}
+  MotionSpeeds: {fileID: 11400000, guid: 4b34086b3772caf40945ee116ef911a2, type: 2}
 --- !u!114 &4315586464039483367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,3 +226,4 @@ MonoBehaviour:
   Color: {r: 0.24, g: 0.55, b: 1, a: 1}
   Size: 1.8
   Order: 3
+  Arrow: 1

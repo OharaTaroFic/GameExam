@@ -47,6 +47,17 @@ public class Player : MonoBehaviour
     [Label("負け")] public RuntimeAnimatorController AnimLose;//敗北時のアニメーション
     //モーションが隠す持ち物（弓・矢・短剣など）も、常に表示するため
     Renderer[] _renderers;
+    //モーションをなめらかにつなぐための土台（さわらない）
+    //待機・歩き・走りは倒し具合（Speed）で混ぜ、勝ち・負けへは重ねながら切り替える
+    //上の 5 つの欄に入れたモーションを、再生中にこの土台へ差し込む
+    [HideInInspector] public RuntimeAnimatorController BaseController;
+    AnimatorOverrideController _override;
+    readonly RuntimeAnimatorController[] _applied = new RuntimeAnimatorController[5];
+    string _animState = "";//土台の中の今の状態
+    const float CrossFadeTime = 0.2f;//勝ち・負けへ切り替えるときに重ねる時間（秒）
+    const float SpeedDamp = 0.1f;//待機・歩き・走りの混ぜ方を変えるときのなめらかさ（秒）
+    //モーションごとの足の速さの表（足が地面を滑って見えないように、再生の速さを合わせる）
+    [HideInInspector] public MotionSpeeds MotionSpeeds;
 
     // Start is called before the first frame update
     void Start()
@@ -82,6 +93,93 @@ public class Player : MonoBehaviour
         _moveAction.Enable();
         //見た目を設定どおりにする
         if (Settings != null) { Settings.Apply(); }
+        //モーションの土台を用意する
+        if (BaseController != null)
+        {
+            _override = new AnimatorOverrideController(BaseController);
+            _animator.runtimeAnimatorController = _override;
+            ApplyMotions();
+        }
+    }
+
+    //5 つの欄のモーションを土台に差し込む（再生中に欄を変えても、すぐ反映される）
+    void ApplyMotions()
+    {
+        if (_override == null) { return; }
+        SetMotion(0, "Idle", AnimIdle);
+        SetMotion(1, "Walk", AnimWalk);
+        SetMotion(2, "Run", AnimRun);
+        SetMotion(3, "Win", AnimWin);
+        SetMotion(4, "Lose", AnimLose);
+    }
+
+    void SetMotion(int index, string slot, RuntimeAnimatorController controller)
+    {
+        if (_applied[index] == controller) { return; }
+        _applied[index] = controller;
+        var clips = controller != null ? controller.animationClips : null;
+        _override[slot] = (clips != null && clips.Length > 0) ? clips[0] : null;
+    }
+
+    //待機・歩き・走り（speed: 0 = 待機、0.5 = 歩き、1 = 走り。間は混ぜる）
+    void PlayLocomotion(float speed)
+    {
+        _animator.SetFloat("Speed", speed, SpeedDamp, Time.deltaTime);
+        PlayState("Locomotion");
+    }
+
+    //土台の中の状態へ、重ねながら切り替える
+    void PlayState(string state)
+    {
+        if (_animState == state) { return; }
+        _animState = state;
+        _animator.CrossFadeInFixedTime(state, CrossFadeTime);
+    }
+
+    //状態に合わせてモーションを決める（土台が無いときは、前のやり方で設定ファイルごと差し替える）
+    void Animate(PlayerState state, float speed)
+    {
+        if (_override == null)
+        {
+            RuntimeAnimatorController c = AnimIdle;
+            if (state == PlayerState.Walk) { c = AnimWalk; }
+            else if (state == PlayerState.Run) { c = AnimRun; }
+            else if (state == PlayerState.Win) { c = AnimWin; }
+            else if (state == PlayerState.Lose) { c = AnimLose; }
+            _animator.runtimeAnimatorController = c;
+            return;
+        }
+        ApplyMotions();
+        _animator.speed = 1f;
+        if (state == PlayerState.Win) { PlayState("Win"); }
+        else if (state == PlayerState.Lose) { PlayState("Lose"); }
+        else { PlayLocomotion(speed); }
+    }
+
+    //実際に進む速さ（秒速）に合わせて、歩きと走りの混ぜ方と再生の速さを決める（足が地面を滑って見えないように）
+    void AnimateMove(float moveSpeed, float stick)
+    {
+        float walk = MotionSpeeds != null ? MotionSpeeds.Get(FirstClip(AnimWalk)) : 0f;
+        float run = MotionSpeeds != null ? MotionSpeeds.Get(FirstClip(AnimRun)) : 0f;
+        //歩き・走りの欄に、足が進まないモーション（待機など）が入っているときは、倒し具合のまま
+        if (_override == null || walk < 0.3f || run < walk + 0.3f)
+        {
+            Animate(_playerState, stick);
+            return;
+        }
+        float blend, rate = 1f;
+        if (moveSpeed < 0.01f) { blend = 0f; }
+        else if (moveSpeed < walk) { blend = 0.5f * moveSpeed / walk; }
+        else if (moveSpeed < run) { blend = 0.5f + 0.5f * (moveSpeed - walk) / (run - walk); }
+        else { blend = 1f; rate = Mathf.Clamp(moveSpeed / run, 0.5f, 2f); }
+        Animate(_playerState, blend);
+        _animator.speed = rate;
+    }
+
+    static AnimationClip FirstClip(RuntimeAnimatorController controller)
+    {
+        var clips = controller != null ? controller.animationClips : null;
+        return (clips != null && clips.Length > 0) ? clips[0] : null;
     }
 
     void OnDestroy()
@@ -125,31 +223,15 @@ public class Player : MonoBehaviour
     /*各シーン用のアップデート*/
     void EditUpdate()
     {
-        //現在のStateでアニメーションを決定
-        switch (_playerState)
-        {
-            case PlayerState.Idle:
-                GetComponent<Animator>().runtimeAnimatorController = AnimIdle;
-                break;
-            case PlayerState.Walk:
-                GetComponent<Animator>().runtimeAnimatorController = AnimWalk;
-                break;
-            case PlayerState.Run:
-                GetComponent<Animator>().runtimeAnimatorController = AnimRun;
-                break;
-            case PlayerState.Win:
-                GetComponent<Animator>().runtimeAnimatorController = AnimWin;
-                break;
-            case PlayerState.Lose:
-                GetComponent<Animator>().runtimeAnimatorController = AnimLose;
-                break;
-            default:
-                break;
-        }
+        //現在のStateでアニメーションを決定（ボタンで選んだモーションを、そのまま見せる）
+        float speed = 0f;
+        if (_playerState == PlayerState.Walk) { speed = 0.5f; }
+        else if (_playerState == PlayerState.Run) { speed = 1f; }
+        Animate(_playerState, speed);
     }
     void TitleUpdate()
     {
-        GetComponent<Animator>().runtimeAnimatorController = AnimIdle;
+        Animate(PlayerState.Idle, 0f);
     }
     void GameUpdate()
     {
@@ -162,24 +244,8 @@ public class Player : MonoBehaviour
         if (direction.sqrMagnitude > 0.01f) { _playerState = PlayerState.Walk; }
         if (direction.sqrMagnitude > 0.98f) { _playerState = PlayerState.Run; }
 
-        //Stateに応じた処理
-        //アニメーションの切り替え
-        if (_playerState == PlayerState.Idle)//待機
-        {
-            //アニメーションをIdleにする_
-            _animator.runtimeAnimatorController = AnimIdle;
-        }
-        else if (_playerState == PlayerState.Walk)//歩行
-        {
-            //アニメーションをWalkにする
-            _animator.runtimeAnimatorController = AnimWalk;
-
-        }
-        else if (_playerState == PlayerState.Run)//走る
-        {
-            //アニメーションをWalkにする
-            _animator.runtimeAnimatorController = AnimRun;
-        }
+        //アニメーションの切り替え（進む速さに合わせて、待機・歩き・走りをなめらかに混ぜる）
+        AnimateMove(direction.magnitude * MoveSpeed, Mathf.Clamp01(direction.magnitude));
         //進行方向を向く
         if (_playerState == PlayerState.Walk || _playerState == PlayerState.Run)//歩行か走るなら
         {
@@ -194,11 +260,11 @@ public class Player : MonoBehaviour
     }
     void WinUpdate()
     {
-        GetComponent<Animator>().runtimeAnimatorController = AnimWin;
+        Animate(PlayerState.Win, 0f);
     }
     void LoseUpdate()
     {
-        GetComponent<Animator>().runtimeAnimatorController = AnimLose;
+        Animate(PlayerState.Lose, 0f);
     }
 
     /*ボタン操作用のメソッド*/
