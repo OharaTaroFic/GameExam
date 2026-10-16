@@ -17,6 +17,7 @@
 4. 最後に AI（Unity MCP）のパッケージを外す
 - **実サーバー（fic2022.boo.jp）で動作を確認（2026-10-17）**。起動時に黄色い警告「Content-Type ... Build/WebGL.wasm ... should be "application/wasm"」が 5 秒出る（サーバーが .wasm の種類を伝えていない。遊ぶのに問題はなく、起動が少し遅くなるだけ）。→ OharaServer のルート `.htaccess` に `AddType application/wasm .wasm` を足して直した（OharaServer の b1ec6ef。本番での確認はユーザー）
 - **「タップしてはじめる」のタップで全画面＋縦向き固定（2026-10-17）**: 雛形 `TapToStart/index.html` の幕のタップで、スマホのときだけ `requestFullscreen`（`navigationUI: "hide"`）→ 成功したら `screen.orientation.lock("portrait")`。iPhone の Safari は全画面に対応していないので、そのまま。ホーム画面に追加する形（PWA）は、https と生徒の手間が要るので見送り
+- **ゲーム全体を 30fps に（2026-10-17）**: 全画面にしたら、キャラを動かすたびに画面全体がカクつくようになった（全画面をやめると直る）。確かめ用の `FrameDiag.cs`（削除済み。アドレスの末尾 `?fps` で、書き換え回数・コマの間隔・画面の大きさを表示。`&v2`＝vSyncCount 2、`&t60`／`&t30`＝targetFrameRate。`?` が無ければ何もしない）で、POCO M7 Pro・Brave・ローカルのサーバーで試した結果: そのまま・t60 はカクつく、v2・t30 はなめらかで見分けがつかない。全画面だと 60fps を描ききれずコマの間隔がバラバラになるため、と見ている。仕組みが単純な t30 を採用: `Assets/Script/FrameRate.cs` が起動時に `vSyncCount = 0`・`targetFrameRate = 30`（エディタの再生にも効く）。移動は経過時間で計算しているので速さは変わらない。ユーザーがスマホでカクつかないことを確認。確かめ用の FrameDiag は削除した
 5. 一括ビルドツール（参考: `C:\GitHub\GameExam\Tools\UntiyExamC_ビルドツール`）。書き出しのページは雛形 `TapToStart` を使う
 
 **モデルとエフォート:** Unity を操作して確かめながら進める作業なので **Opus・高**。
