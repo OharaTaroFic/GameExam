@@ -198,7 +198,8 @@
 - **敵の速さ（NavMeshAgent・Enemy._speed とも 10）が、プレイヤー（MoveSpeed 5）の 2 倍。** ExamC のまま。難易度は段階B で実機を見て決める
 - ゲーム中のカメラ（GameSceneCamera）はプレイヤーの上に 5、後ろに 3 から追いかける近い視点。迷路全体は映らない
 - 床（AlphaMaskURP シェーダー）には、壁やキャラクターの影が落ちていないように見える（画像で見た印象。未確認）
-- NavMesh（敵が歩ける範囲）は、GameScene と EditScene が `Assets/SceneSetting/NavMesh.asset` を共有している（警告は出ていない）
+- NavMesh（敵が歩ける範囲）は GameScene だけが `Assets/GameScene/NavMesh.asset` を使う。EditScene（敵がいない）からは 2026-10-16 に外し、古い共有の `Assets/SceneSetting/NavMesh.asset` は削除した
+- EditScene のボタン（2026-10-16）: CanvasScaler を 1080×1920・match 0.5 に、5 つのボタンを画面の下端（下から 80）に 190×110 で横一列、文字は NotoSansJP 太字 44 で「待機・歩き・走り・勝ち・負け」（Player の欄と同じ言葉）
 - EditScene の 5 つのボタン（待機・歩き・走り・勝ち・負け）は、再生中にモーションを見比べるためのもの
 - EditPlayer.cs はどのシーンでも使われていない。古い `Input.GetAxis` のままで、中の "Lose" というシーン名も誤り
 - 残っている壊れた素材は、ユニティちゃんの見本モデル（`Assets/UnityChan/Prefabs/*`）だけで、どのシーンも使っていない
