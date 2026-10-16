@@ -1,16 +1,44 @@
 # UnityExamD 引き継ぎ資料
 
-最終更新: 2026-10-16（PC: DESKTOP-9I5RCOT / teacherM で作業）
+最終更新: 2026-10-16 夜（PC: MahiroDesktop で作業。その前は teacherM）
 
 ## 0. 次にやること（ここから再開）
 
-1. **段階B の最後: WebGL に切り替えて、スマホの実機で確かめる**（難易度の調整もここで）。段階B のほかの項目はすべて済み（「0.6」）。始める前に、進め方（ビルドの置き場所、スマホでの開き方など）をユーザーに確認する
-   - その PC の Unity 6000.3.24f1 に WebGL のモジュールが入っているかを先に確かめる（ExamC のビルドツールでは、別の PC でこれが原因と思われる失敗が未解決。「6. これからの計画」）
-   - スマホで見るには、PC でローカルのサーバーを立てて同じ Wi-Fi から開くか、どこかに置く必要がある
-2. その後は段階C の残り → 配る前の準備（Unity MCP のパッケージを外す、など） → 一括ビルドツール
-3. ユーザーが確かめていないもの: タイトル・勝ち・負け画面のタップの動作（MCP からは入力をまねても確かめられない）。キーボードの切り替えはユーザーが確認済み
+**今いるブランチは `builtin`**（描画の方式を URP からビルトインに切り替えた。「0.7」）。`main` は URP のまま。
+
+1. **ビルトイン版の見た目をユーザーに Unity で確かめてもらい、`builtin` を `main` に取り込むか決める**（未確認。壁が白っぽくなった、床に影が落ちるようになった、など）
+2. **難易度の調整**（段階B の最後の残り）: スマホで遊べるようになったので、敵の速さ（2・4・8）、迷路、カメラを実機で見て決める
+3. その後は段階C の残り → 配る前の準備（Unity MCP のパッケージを外す、URP のパッケージと設定ファイルの片付け、など） → 一括ビルドツール
+4. ユーザーが確かめていないもの: タイトル・勝ち・負け画面のタップの動作（MCP からは入力をまねても確かめられない）。キーボードの切り替えはユーザーが確認済み
 
 **モデルとエフォート:** Unity を操作して確かめながら進める作業なので **Opus・高**。
+
+## 0.7 スマホで落ちる件と、ビルトインへの切り替え（2026-10-16、MahiroDesktop）
+
+**症状:** WebGL 版を POCO M7 Pro 5G（Android 16、GPU は **PowerVR B-Series BXM-8-256**、Brave）で開くと、タイトルのあとで「お使いのブラウザは WebGL 非対応」やクラッシュ。PC のブラウザでは安定。ExamC（Unity 2023.2・ビルトイン）は同じスマホで動いていた。
+
+**分かったこと（順番に）:**
+- サーバーのアクセス記録では、スマホにファイルは全部届いていた（通信の問題ではない）
+- 画面の細かさを下げる（`config.devicePixelRatio = 1`）だけでは直らない
+- **Mobile_RPAsset の HDR をオフ** → タブごと落ちることはなくなり、タイトルは動く。GameScene で止まる
+- 書き出した index.html に「記録とエラーを画面に出す欄」を足して調べた: GameScene に入って約 2 秒で画面が止まり、約 10 秒後に `webglcontextlost`。ページと音楽は生きている。メモリは小さい（wasm 96〜115MB）
+- `brave://gpu`（スマホで開く）の Log Messages: `GL_CONTEXT_LOST_KHR` → `Context reset detected after MakeCurrent` → `Restarting GPU process due to unrecoverable error`。**GPU のドライバー自身がリセットしていた**（見張りによる強制終了でもメモリ不足でもない）。Chrome はこの PowerVR のドライバーの不具合を 20 以上の回避策で抑えている
+- URL で機能を切る一時的な仕組みで切り分け: ミニマップを切ると長く持つ、描画の解像度を上げると悪化（GPU の負荷が多いほど早く落ちる傾向）。持ち物の表示の入れ直し・影・敵・床・スティックの画面は、どれも単独の原因ではなかった
+- Chrome 系は、同じサイトで GPU が何度も落ちると、しばらくそのサイトの WebGL を止める（「WebGL 非対応」が出ていたのはこれ）。試すたびにブラウザを完全に終了する必要があった
+- **ユーザーの判断でビルトインに切り替えたら、スマホで普通に動いた**（「余裕でうごきますねぇ」）
+
+**ビルトインへの切り替えでやったこと（`builtin` ブランチ）:**
+- プロジェクトはそのまま（作り直していない）。URP のパッケージは入れたまま（カメラ・ライトに付いた URP 用の部品を壊さないため。使ってはいない）
+- Graphics の既定と、品質設定 2 つ（Mobile・PC）の URP の割り当てを外した
+- 品質設定 Mobile（WebGL が使う）をスマホ向けに: 光の数 1、くっきりした影だけ、影の分割なし、影の距離 30
+- `Assets` の .mat のうち URP/Lit の 97 個を Standard に変換（`_BaseMap`→`_MainTex`、`_BaseColor`→`_Color`、`_Smoothness`→`_Glossiness`、`_Metallic`。全部不透明・発光や凹凸の画像なし。変換前後の値を全数で突き合わせて食い違い 0）。床 4 個は ExamC の元のシェーダー `Custom/AlphaMask` に戻した（項目名が同じ）
+- GameScene の壁 16 個と `Prefab/MiniLevel.prefab` の 25 個が URP のパッケージの `Lit.mat` を直接使っていたので、Unity 内蔵の `Default-Material`（ExamC の元の壁と同じ）に差し替え
+- 全シーンのカメラ 6 台の HDR・MSAA をオフ
+- FBX の中に入っているマテリアル（URP のまま 156 個）は、どこでも使っていないのでそのまま
+- 調査用の `Assets/Script/Diag/DiagSwitches.cs` は削除済み。`Assets/UnityChan/Stage/Shader/AlphaMaskURP.shader` と `Assets/Settings/` の URP の設定ファイルは使われずに残っている
+- **注意:** 切り替えた直後の 1 回目の書き出しは、URP の書き出し前の点検（`URPBuildDataValidator`）が「RenderGraphSettings が無い」と止めた。設定の反映が遅れていたらしく、少し待ってもう一度書き出したら通った
+- 書き出しの設定: WebGL、圧縮 Disabled、書き出し先 `Build/WebGL`（git の対象外）。スマホで見るときは、PC で `python -m http.server 8000 --bind 0.0.0.0`（`Build/WebGL` で）を動かし、同じ Wi-Fi から `http://<PC の IP>:8000`（MahiroDesktop は 192.168.0.8）
+- 書き出した index.html は Unity の標準のまま（調査用の欄は、次の書き出しで消える）
 
 ## 0.5 C: ステージ作りの安全策（2026-10-16 に完成。ユーザーが実機で確認済み）
 
@@ -108,8 +136,9 @@
 | 持ち物 | モーションが隠す持ち物（弓・矢・短剣など）も**常に全部表示**（試して違和感なし。切り替えのチェックは付けない） |
 | ライト | EditScene・GameScene とも回転 (50, 30, 0)（カメラ側から当たる向き） |
 | ファイル名 | **英語にする**（2026-10-16 にユーザーが決定。日本語のファイル名・フォルダ名は使わない）。メニューの表示名や Inspector の項目名（`[Label]`）は日本語でよい |
+| 描画の方式 | **ビルトイン**（2026-10-16 にユーザーが決定。URP だと PowerVR の GPU のスマホで GameScene の描画中に GPU がリセットされて落ちた。「0.7」）。`builtin` ブランチで切り替え済み、`main` への取り込みは未決 |
 
-## 3. 今の状態（2026-10-15）
+## 3. 今の状態（2026-10-15 時点の記述。プレイヤーの位置・カメラ・敵の速さ・URP などは古い。新しい内容は「0.5」〜「0.7」）
 
 **パソコンのキーボードで遊べる。** 再生して確かめたこと: 敵が迷路に沿って追ってくる、D キーで右へ動き走るモーションに切り替わる、敵に触れると LoseScene、Enter でタイトル、スペースで GameScene、星を取ると WinScene。再生中のエラーは無し。
 
@@ -123,7 +152,7 @@
 - **`Assets/Script/Editor/PlayerPrefabSync.cs`**: `ObjectChangeEvents` で、プレイヤーの Renderer の `m_Materials` と Player の `AnimIdle`〜`AnimLose` の変更を拾う。編集中は `PrefabUtility.ApplyPropertyOverride` で Player.prefab に書き込む。再生中は覚えておき、再生を止めたとき（EnteredEditMode）に `LoadPrefabContents` → `SaveAsPrefabAsset` で書き込む
   - **再生中はプレイヤーが Player.prefab のインスタンスと判定されない**（`GetPrefabAssetPathOfNearestInstanceRoot` が空）。なので再生中は Player コンポーネントの有無だけで対象にしている（最初はこの判定で見逃していた）
   - スクリプトから直接代入した値（Undo に記録されない変更）は拾わない。なので Player.cs が実行中に Animator を差し替えても保存されない
-- **`Assets/PlayerSettings.asset`**（`PlayerSettings.cs`）: 先生用・やり直し用。見た目の 5 欄（体の色・目・髪・剣と盾・弓矢）に入れたマテリアルの中身（シェーダー・値・描画順）を `OnValidate` で受け皿に写す。**欄が空なら灰色 `Player_Plain.mat`（URP 標準 Lit の写し）を写す**。今は 5 欄とも空。モーションの 5 欄は「最初に戻す」で使う値（idle1・walk1・run1・win1・lose1）
+- **`Assets/PlayerSettings.asset`**（`PlayerSettings.cs`）: 先生用・やり直し用。見た目の 5 欄（体の色・目・髪・剣と盾・弓矢）に入れたマテリアルの中身（シェーダー・値・描画順）を `OnValidate` で受け皿に写す。**欄が空なら灰色 `Player_Plain.mat`（もとは URP 標準 Lit の写し。ビルトインへの切り替えで Standard・色 0.5 の灰色になった）を写す**。今は 5 欄とも空。モーションの 5 欄は「最初に戻す」で使う値（idle1・walk1・run1・win1・lose1）
   - 見た目の欄は、受け皿のままの部品にだけ効く。生徒がドラッグで直接塗った部品には効かない
 - **メニュー「授業 > プレイヤーの見た目とモーションを最初に戻す」**: 確認の画面のあと、全部品を受け皿に戻し、モーション欄を「プレイヤー設定」の値にし、開いているシーンのプレイヤーに残った差分も取り消す。中身は `PlayerPrefabSync.ResetToDefault()`（MCP からの試験はこちらを直接呼ぶ）
 - **Player.cs**: モーションは自分の 5 欄から読む（欄名は `[Label]` で日本語表示）。`LateUpdate` で全 Renderer の enabled を毎フレーム true に戻す（モーションのデータが持ち物を隠すため。下の注意点）
