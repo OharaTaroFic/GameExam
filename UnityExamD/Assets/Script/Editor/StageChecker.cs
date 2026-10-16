@@ -68,6 +68,7 @@ public static class StageChecker
     public static List<Problem> Check()
     {
         var problems = new List<Problem>();
+        Physics.SyncTransforms(); //動かした直後は当たり判定の位置が古いままなので、そろえてから調べる
         var player = GameObject.FindGameObjectWithTag("Player");
         var dots = GameObject.FindGameObjectsWithTag("Dot");
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");

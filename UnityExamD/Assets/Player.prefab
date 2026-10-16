@@ -133,6 +133,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4658507895210391227}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4315586464039483367}
   m_SourcePrefab: {fileID: 100100000, guid: bbdc39aa9e3ac844ab996f9f1927672a, type: 3}
 --- !u!1 &4438216241626909117 stripped
 GameObject:
@@ -206,3 +209,18 @@ MonoBehaviour:
   AnimRun: {fileID: 9100000, guid: de1eac56588292541925d8ad558a72d9, type: 2}
   AnimWin: {fileID: 9100000, guid: d1215d04398ae514f85f54709d4a31ef, type: 2}
   AnimLose: {fileID: 9100000, guid: 067a811a8557f8a45a9909a87ad3d327, type: 2}
+--- !u!114 &4315586464039483367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4438216241626909117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 780d4fbfe50a3144cade731d2b8e07c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinimapMarker
+  Color: {r: 0.24, g: 0.55, b: 1, a: 1}
+  Size: 1.8
+  Order: 3

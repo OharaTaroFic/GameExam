@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8616808708677142164}
   - component: {fileID: 2316211896951235012}
   - component: {fileID: 7015567744271697834}
+  - component: {fileID: 8304091521322007503}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -91,6 +92,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
+--- !u!114 &8304091521322007503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863914220869241871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 780d4fbfe50a3144cade731d2b8e07c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MinimapMarker
+  Color: {r: 0.9, g: 0.2, b: 0.2, a: 1}
+  Size: 1.8
+  Order: 2
 --- !u!1001 &402637734526148607
 PrefabInstance:
   m_ObjectHideFlags: 0

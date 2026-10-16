@@ -5,14 +5,17 @@ using UnityEngine.SceneManagement;
 
 //ステージ作りの安全策（エディタ用）
 //・迷路（シーンの Map）を、Scene ビューでクリックしても選べないようにする
-//  この設定は PC ごとの Library に保存されるので、シーンを開くたびにかけ直す（配ったばかりのプロジェクトでも効く）
+//・画面の操作パネル（TouchCanvas。スティックなど）は、Scene ビューでは隠して選べないようにする
+//  （画面用のキャンバスは Scene ビューに巨大な四角で出て、ステージ作りの邪魔になるため）
+//  この設定は PC ごとの Library に保存されるので、かけ直し続ける（配ったばかりのプロジェクトでも効く）
 //・敵と星を置いたり動かしたりしたら、高さをそろえる（敵は床 y = 0、星は床から少し浮かせた y = 0.5）
 [InitializeOnLoad]
 public static class StageGuard
 {
     const string MapName = "Map";
+    const string CanvasName = "TouchCanvas";
     const string EditableKey = "UnityExamD.MazeEditable";
-    const string MenuPath = "授業/迷路を選べるようにする（先生用）";
+    const string MenuPath = "授業/迷路と操作パネルを選べるようにする（先生用）";
     const float EnemyHeight = 0f;  //敵は足元が基準なので、床にそのまま立たせる
     const float DotHeight = 0.5f;  //星は球の中心が基準。床に埋まらず、上から見つけやすい高さ
 
@@ -27,17 +30,31 @@ public static class StageGuard
     }
 
     static GameObject s_Map;
+    static GameObject s_Canvas;
     static bool s_Searched;
 
     static void KeepMazeLocked()
     {
-        if (s_Map == null && !s_Searched)
+        if (!s_Searched)
         {
             s_Map = GameObject.Find(MapName);
+            s_Canvas = GameObject.Find(CanvasName);
             s_Searched = true;
         }
-        if (s_Map == null) { return; }
-        if (SceneVisibilityManager.instance.IsPickingDisabled(s_Map) == MazeEditable) { LockMaze(s_Map.scene); }
+        //中の物（壁など）を 1 つずつ確かめる（あとから足した壁にもかかるように）
+        if (s_Map != null && NeedsLock(s_Map, false)) { LockMaze(s_Map.scene); }
+        if (s_Canvas != null && NeedsLock(s_Canvas, true)) { LockMaze(s_Canvas.scene); }
+    }
+
+    static bool NeedsLock(GameObject root, bool hide)
+    {
+        var svm = SceneVisibilityManager.instance;
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
+        {
+            if (svm.IsPickingDisabled(t.gameObject) == MazeEditable) { return true; }
+            if (hide && svm.IsHidden(t.gameObject) == MazeEditable) { return true; }
+        }
+        return false;
     }
 
     //先生用の切り替え（その PC だけに効く）
@@ -51,11 +68,19 @@ public static class StageGuard
     static void LockMaze(Scene scene)
     {
         if (!scene.isLoaded) { return; }
+        var svm = SceneVisibilityManager.instance;
         foreach (var go in scene.GetRootGameObjects())
         {
-            if (go.name != MapName) { continue; }
-            if (MazeEditable) { SceneVisibilityManager.instance.EnablePicking(go, true); }
-            else { SceneVisibilityManager.instance.DisablePicking(go, true); }
+            if (go.name == MapName)
+            {
+                if (MazeEditable) { svm.EnablePicking(go, true); }
+                else { svm.DisablePicking(go, true); }
+            }
+            else if (go.name == CanvasName)
+            {
+                if (MazeEditable) { svm.EnablePicking(go, true); svm.Show(go, true); }
+                else { svm.DisablePicking(go, true); svm.Hide(go, true); }
+            }
         }
     }
 
