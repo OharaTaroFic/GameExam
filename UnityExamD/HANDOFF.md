@@ -4,6 +4,8 @@
 
 ## 0. 次にやること（ここから再開）
 
+**2026-10-17 にユーザーが「完成」とした。** 下の 1〜5 はすべて済み。授業で使うときは、生徒の作品を集めて `Tools/UnityExamD_ビルドツール` で書き出し、サーバーに上げる。
+
 ブランチは `main`（描画の方式はビルトインで確定。`builtin` ブランチは取り込み済み）。
 
 **ユーザーが決めたこと:**
@@ -15,7 +17,7 @@
 2. ~~ゲームの調整と、生徒が触る前の状態~~ 済み（2026-10-17）: GameScene を **遅い敵 1 体 (1.83, 0, 14.5)・星 1 個 (4.91, 0.5, 12.84)**（どちらも試しの配置を入れる前の元の位置）にした。プレイヤーは `PlayerPrefabSync.ResetToDefault()`（メニュー「授業 > プレイヤーの見た目とモーションを最初に戻す」と同じ処理）で、部品の色を灰色の受け皿に、モーションを idle1・walk1・run1・win1・lose1 に戻した。5 シーンのプレイヤーに色・モーションの変更が残っていないこと（0 件）、StageChecker 0 件を確認
 3. ~~タイトル・勝ち・負け画面のタップ~~ ユーザーがスマホで確認済み（2026-10-17）
 - **AI を外す前の精査（2026-10-17）**: シーン 5・Player・敵 3・星・プレイヤー設定・入力の設定・モーションの表と土台・`Material` の .mat・`Animators` の .controller からたどれない物を洗った（前回は `Material` を丸ごと起点にしていて、使われていない画像を見落としていた）。消した: どの色からも使われていない `Material/Textures/bowArrow_blue 1.png`、URP と Shader Graph の設定の残り `ProjectSettings/URPProjectSettings.asset`・`ShaderGraphSettings.asset`、`GraphicsSettings.asset` の URP の 1 行（`m_RenderPipelineGlobalSettingsMap` を `{}` に。**Unity が開いたままだと保存し直したときに戻る可能性があるので、開き直したあとに消えたままか確かめる**）、`Build/delete_list.txt`。残した: Editor のスクリプトなど 12 個（役目あり）、雛形の中身、`com.unity.test-framework`（VS 連携のパッケージが必要とする）、`Prefab/model`（383MB。モーションの FBX にキャラの形も入っているため。書き出しにはモーションだけ入るので、ゲームの大きさには影響しない）
-4. 最後に AI（Unity MCP）のパッケージを外す
+4. ~~最後に AI（Unity MCP）のパッケージを外す~~ 外した（2026-10-17）: `Packages/manifest.json` から `com.unity.ai.assistant` を消し（`packages-lock.json` から依存ごと 41 行減った）、`ProjectSettings/Packages/com.unity.ai.assistant/` と `UserSettings/AI.*`（6 つ）を消した。Console のエラー 0、メニューの「AI Assistant」が消えたのをユーザーが確認（左上の「✦ AI」ボタンは Unity 6.3 本体のもので残る）。開き直しても GraphicsSettings の URP の行は戻らなかった。開き直したときに Unity が開いていたシーンの控え `Assets/_Recovery/0.unity`（TitleScene と全く同じ）を作ったので消した。**これ以降、Claude は Unity MCP で Unity を操作できない**（もう一度使うなら、パッケージを入れ直す）。外したあと、今のプロジェクトを Library なしで 3 つ写して一括ビルドツールで書き出し、3 件とも成功（合計 7 分。ゼロからの 1 件目も 3.3 分だった。この PC に Unity の共通の作業記録が残っているためかもしれず、別の PC ではもっとかかる可能性あり）
 - **実サーバー（fic2022.boo.jp）で動作を確認（2026-10-17）**。起動時に黄色い警告「Content-Type ... Build/WebGL.wasm ... should be "application/wasm"」が 5 秒出る（サーバーが .wasm の種類を伝えていない。遊ぶのに問題はなく、起動が少し遅くなるだけ）。→ OharaServer のルート `.htaccess` に `AddType application/wasm .wasm` を足して直した（OharaServer の b1ec6ef。本番での確認はユーザー）
 - **「タップしてはじめる」のタップで全画面＋縦向き固定（2026-10-17）**: 雛形 `TapToStart/index.html` の幕のタップで、スマホのときだけ `requestFullscreen`（`navigationUI: "hide"`）→ 成功したら `screen.orientation.lock("portrait")`。iPhone の Safari は全画面に対応していないので、そのまま。ホーム画面に追加する形（PWA）は、https と生徒の手間が要るので見送り
 - **ゲーム全体を 30fps に（2026-10-17）**: 全画面にしたら、キャラを動かすたびに画面全体がカクつくようになった（全画面をやめると直る）。確かめ用の `FrameDiag.cs`（削除済み。アドレスの末尾 `?fps` で、書き換え回数・コマの間隔・画面の大きさを表示。`&v2`＝vSyncCount 2、`&t60`／`&t30`＝targetFrameRate。`?` が無ければ何もしない）で、POCO M7 Pro・Brave・ローカルのサーバーで試した結果: そのまま・t60 はカクつく、v2・t30 はなめらかで見分けがつかない。全画面だと 60fps を描ききれずコマの間隔がバラバラになるため、と見ている。仕組みが単純な t30 を採用: `Assets/Script/FrameRate.cs` が起動時に `vSyncCount = 0`・`targetFrameRate = 30`（エディタの再生にも効く）。移動は経過時間で計算しているので速さは変わらない。ユーザーがスマホでカクつかないことを確認。確かめ用の FrameDiag は削除した
