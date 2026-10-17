@@ -18,7 +18,13 @@
 - **実サーバー（fic2022.boo.jp）で動作を確認（2026-10-17）**。起動時に黄色い警告「Content-Type ... Build/WebGL.wasm ... should be "application/wasm"」が 5 秒出る（サーバーが .wasm の種類を伝えていない。遊ぶのに問題はなく、起動が少し遅くなるだけ）。→ OharaServer のルート `.htaccess` に `AddType application/wasm .wasm` を足して直した（OharaServer の b1ec6ef。本番での確認はユーザー）
 - **「タップしてはじめる」のタップで全画面＋縦向き固定（2026-10-17）**: 雛形 `TapToStart/index.html` の幕のタップで、スマホのときだけ `requestFullscreen`（`navigationUI: "hide"`）→ 成功したら `screen.orientation.lock("portrait")`。iPhone の Safari は全画面に対応していないので、そのまま。ホーム画面に追加する形（PWA）は、https と生徒の手間が要るので見送り
 - **ゲーム全体を 30fps に（2026-10-17）**: 全画面にしたら、キャラを動かすたびに画面全体がカクつくようになった（全画面をやめると直る）。確かめ用の `FrameDiag.cs`（削除済み。アドレスの末尾 `?fps` で、書き換え回数・コマの間隔・画面の大きさを表示。`&v2`＝vSyncCount 2、`&t60`／`&t30`＝targetFrameRate。`?` が無ければ何もしない）で、POCO M7 Pro・Brave・ローカルのサーバーで試した結果: そのまま・t60 はカクつく、v2・t30 はなめらかで見分けがつかない。全画面だと 60fps を描ききれずコマの間隔がバラバラになるため、と見ている。仕組みが単純な t30 を採用: `Assets/Script/FrameRate.cs` が起動時に `vSyncCount = 0`・`targetFrameRate = 30`（エディタの再生にも効く）。移動は経過時間で計算しているので速さは変わらない。ユーザーがスマホでカクつかないことを確認。確かめ用の FrameDiag は削除した
-5. 一括ビルドツール（参考: `C:\GitHub\GameExam\Tools\UntiyExamC_ビルドツール`）。書き出しのページは雛形 `TapToStart` を使う
+5. ~~一括ビルドツール~~ 作った（2026-10-17）: `C:\GitHub\GameExam\Tools\UnityExamD_ビルドツール`（ExamC の道具を元に作り直し。使い方は中の `はじめに読む_手順書.txt`）
+   - できる作品のフォルダ名は `[生徒が最後に保存した日 yyyyMMdd]_[タイトル画面の Name の「制作：〇〇」の〇〇]`（ユーザーの希望）。名前を変えていなければ集めたときのフォルダ名、同じ名前は `_2`。名前は Unity を起動せず `Assets/TitleScene.unity` の YAML から読む（GameObject「Name」の Text の m_Text。\uXXXX を戻す）。対応は `完成したゲーム/_ログ/対応表.csv` に残し、やり直しでも同じ名前
+   - `BatchBuild.cs` が書き出しの設定を ExamD にそろえる（Gzip＋Decompression Fallback、雛形 TapToStart、Unity ロゴなし、裏でも動く）。**生徒の作品には `PlayerSettings` という部品があるので、`UnityEditor.PlayerSettings` と書かないとコンパイルで止まる**（1 回目はこれで全部失敗した）
+   - いったん `_作業中/<名前>/WebGL` に書き出してから `<名前>` へ移す（中のファイル名が `WebGL.*` にそろう）
+   - Library の無い作品は、1 件目の成功を待ってから、その Library（約 2.6GB）を robocopy で写して書き出す。写した Library は書き終わったら消す
+   - 試し: 今のプロジェクトを Library なしで 3 つ写し、名前を「やまだ」「〇〇〇〇のまま」「やまだ」にして実行 → `20261017_やまだ`・`20261017_002_テスト`・`20261017_やまだ_2`、全部成功、合計 8 分（1 件目は前の失敗で読み込みが途中まで済んでいたので 3.7 分。本当のゼロからは 10〜20 分の見込み）。ユーザーがスマホで 3 つとも遊べることを確認。試しの作品は `作品を入れる` に残っている（git には入らない）
+   - `.gitignore` で `作品を入れる` の中身と `完成したゲーム` を git に入れない（ExamC の道具には無かった）
 
 **モデルとエフォート:** Unity を操作して確かめながら進める作業なので **Opus・高**。
 
@@ -59,7 +65,7 @@
 - FBX の中に入っているマテリアル（URP のまま 156 個）は、どこでも使っていないのでそのまま
 - 調査用の `Assets/Script/Diag/DiagSwitches.cs` は削除済み。`Assets/UnityChan/Stage/Shader/AlphaMaskURP.shader` と `Assets/Settings/` の URP の設定ファイルは使われずに残っている
 - **注意:** 切り替えた直後の 1 回目の書き出しは、URP の書き出し前の点検（`URPBuildDataValidator`）が「RenderGraphSettings が無い」と止めた。設定の反映が遅れていたらしく、少し待ってもう一度書き出したら通った
-- 書き出しの設定: WebGL、圧縮 Disabled、書き出し先 `Build/WebGL`（git の対象外）。スマホで見るときは、PC で `python -m http.server 8000 --bind 0.0.0.0`（`Build/WebGL` で）を動かし、同じ Wi-Fi から `http://<PC の IP>:8000`（MahiroDesktop は 192.168.0.8）
+- 書き出しの設定: WebGL、圧縮 Gzip＋Decompression Fallback（2026-10-17 に Disabled から変更。ExamC でも Gzip で問題なかった。ローカルのサーバーで Disabled と並べて試し、ユーザーが「全然問題ない」。大きさ約 68MB → 約 36MB。ファイルは `.unityweb` になり、サーバー側の設定なしでブラウザが解凍する）、書き出し先 `Build/WebGL`（git の対象外）。スマホで見るときは、PC で `python -m http.server 8000 --bind 0.0.0.0`（`Build/WebGL` で）を動かし、同じ Wi-Fi から `http://<PC の IP>:8000`（MahiroDesktop は 192.168.0.8）
 - 書き出した index.html は Unity の標準のまま（調査用の欄は、次の書き出しで消える）
 
 ## 0.5 C: ステージ作りの安全策（2026-10-16 に完成。ユーザーが実機で確認済み）
@@ -233,7 +239,7 @@
 - **段階B: スマホで遊べるようにする** ← 次: 画面のスティック、キーボードの切り替えスイッチ、Game ビューの縦長固定、タイトル・勝ち負け画面のタップ、縦画面と迷路の収め方、WebGL に切り替えて実機確認、必要なら敵の速さなどで難易度調整
 - **段階C の残り**: EditScene を残すか（今はビルドに入っていない）、不要物（EditPlayer.cs、ユニティちゃんの見本）の片付け、案C（5 人並べる）を足すか
 - **配る前の準備**: Unity MCP 用のパッケージ `com.unity.ai.assistant` を `Packages/manifest.json` から外す（2026-10-16 にユーザーが了承）。入れたままだと、AI 生成機能の契約確認で「Error reason is 'NoSubscription' … (https://generators.ai.unity.com)」が出たり、AI の画面が出たりして、生徒が混乱する。開発中は入れたままにする
-- **一括ビルドツール**（後日 Claude が作る、とユーザーが予告）: 生徒全員の分をまとめて WebGL でビルドする。中身（入力の形、公開先など）は未定
+- **一括ビルドツール**（後日 Claude が作る、とユーザーが予告）: 生徒全員の分をまとめて WebGL でビルドする。→ 2026-10-17 に作った（上の「0. 次にやること」の 5）
   - 参考: ExamC 用 `C:\GitHub\GameExam\Tools\UntiyExamC_ビルドツール`（フォルダ名の Untiy は原文のまま）。作品フォルダを「作品を入れる」に入れて bat をダブルクリックすると、WebGL で順にビルドし、ローカルのサーバーで一覧から遊べる。中身は `tools/build.ps1`（全体の進行）、`tools/BatchBuild.cs`（Unity 側のビルド処理）、`tools/view.ps1`（見るためのサーバー）。非エンジニア向けの手順書つき
   - 同じフォルダの `引き継ぎ_ビルド失敗調査.md` に、**別の PC で途中まで進んでから失敗する問題が未解決**のまま残っている（有力な原因は、その Unity に WebGL のモジュールが入っていないこと）。ExamD 版を作るときは、この点を先に潰す
   - ExamC 版は手元で見るだけで、「LINE で URL を送る」ための公開先には対応していない
