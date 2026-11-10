@@ -82,6 +82,13 @@ Get-ChildItem -Path $SrcRoot -Directory -ErrorAction SilentlyContinue | Sort-Obj
     $hit = $installed | Where-Object { $_.Version -eq $ver } | Select-Object -First 1
     if (-not $hit) { $skipped += "$name … Unity $ver がこのPCに入っていません"; return }
 
+    # WebGL 用の部品が無いと、途中まで進んでから失敗する。始める前に知らせる
+    $webgl = Join-Path (Split-Path $hit.Exe -Parent) 'Data\PlaybackEngines\WebGLSupport'
+    if (-not (Test-Path $webgl)) {
+        $skipped += "$name … Unity $ver に WebGL 用の部品（WebGL Build Support）が入っていません。Unity Hub で追加してください"
+        return
+    }
+
     $targets += [pscustomobject]@{ Name = $name; Path = $dir.FullName; Version = $ver; Exe = $hit.Exe }
 }
 
@@ -152,6 +159,47 @@ function Get-Phase {
     if ($Tail -match 'Import Asset|Importing|Refresh|AssetDatabase')    { return @{ Text = '素材を読み込み中';   Pct = 18 } }
     if ($Tail -match 'Licensing|Initialize engine|Loading GUID')        { return @{ Text = 'Unityを起動中';      Pct = 8  } }
     return @{ Text = '処理中'; Pct = 35 }
+}
+
+# 失敗したログから、分かる範囲で理由を返す（分からなければ空文字）
+$ReasonLicense = 'Unity Hub に未ログイン（ライセンスなし）'
+$script:NotStarted = 0
+# 上から順に調べ、最初に当たったものを理由にする
+$FailRules = @(
+    @{ P = 'No valid Unity Editor license found'
+       R = $ReasonLicense },
+    @{ P = 'another Unity instance is running with this project open'
+       R = 'この作品を Unity で開いたままです（Unity を閉じてやり直してください）' },
+    @{ P = 'build target was unsupported|Switching to WebGL.{0,40}is disabled|WebGL.{0,40}(is not installed|not supported)'
+       R = 'この版の Unity に WebGL 用の部品が入っていません' },
+    @{ P = 'error CS\d{4}|Scripts have compiler errors|executeMethod class .{0,60}could not be found'
+       R = '作品のスクリプトにエラーがあります（作品側の問題）' },
+    @{ P = '\[OCBuild\] シーンが1つも'
+       R = '作品の中にシーンが見つかりません（作品側の問題）' },
+    @{ P = 'There is not enough space on the disk|No space left on device|Disk full|ディスクに十分な空き領域'
+       R = 'ディスクの空き容量が足りません' },
+    @{ P = 'PathTooLongException|path, file name, or both are too long|path is too long'
+       R = 'フォルダの場所が深すぎます（ツール一式を C:\ の直下など浅い場所に移してください）' },
+    @{ P = 'OutOfMemoryException|out of memory|Could not allocate memory|bad_alloc'
+       R = 'メモリが足りません' },
+    @{ P = 'An error occurred while resolving packages'
+       R = '作品が使う追加部品（パッケージ）を取得できません（ネット接続を確認してください）' }
+)
+$HintPattern = 'error CS\d{4}|\[OCBuild\] (例外|シーンが)|Error building Player|Build Finished, Result: Failure|No valid Unity Editor license|Exception:'
+
+function Get-FailReason {
+    param([string]$Path)
+    $text = Read-LogTail $Path 50000000
+    $reason = ''
+    foreach ($r in $FailRules) { if ($text -match $r.P) { $reason = $r.R; break } }
+    if (-not $reason) {
+        $reason = if ($text) { '理由を自動で判定できませんでした（ログを担当者に渡してください）' }
+                  else       { 'ログが残っていません（Unity が起動できなかった可能性があります）' }
+    }
+    $hints = @($text -split "`r?`n" | Where-Object { $_ -match $HintPattern } |
+               ForEach-Object { $s = $_.Trim(); if ($s.Length -gt 160) { $s.Substring(0, 160) + '…' } else { $s } } |
+               Select-Object -Unique -First 3)
+    return [pscustomobject]@{ Reason = $reason; Hints = $hints }
 }
 
 function Format-Span([double]$Minutes) {
@@ -248,7 +296,9 @@ function Draw {
         $mark = if ($r.結果 -eq '成功') { '○' } else { '×' }
         $nm = $r.作品名
         if ($nm.Length -gt 22) { $nm = $nm.Substring(0, 21) + '…' }
-        [void]$L.Add(('     {0} {1,-23} {2:N0}分' -f $mark, $nm, $r.所要分))
+        $row = ('     {0} {1,-23} {2:N0}分' -f $mark, $nm, $r.所要分)
+        if ($r.理由) { $row += "  $($r.理由)" }
+        [void]$L.Add($row)
     }
     if ($doneCount -gt 8) { [void]$L.Add("     … ほか $($doneCount - 8) 件") }
     [void]$L.Add('')
@@ -280,13 +330,23 @@ function Harvest {
         foreach ($job in @($running | Where-Object { $_.Proc.HasExited })) {
             $job.SW.Stop()
             $ok  = ($job.Proc.ExitCode -eq 0) -and (Test-Path (Join-Path $job.Out 'index.html'))
+            $why = ''; $hints = @()
+            if (-not $ok) { $fr = Get-FailReason $job.Log; $why = $fr.Reason; $hints = @($fr.Hints) }
             [void]$results.Add([pscustomobject]@{
-                作品名 = $job.Name
-                結果   = $(if ($ok) { '成功' } else { '失敗' })
-                所要分 = [math]::Round($job.SW.Elapsed.TotalMinutes, 1)
-                ログ   = $job.Log
+                作品名   = $job.Name
+                結果     = $(if ($ok) { '成功' } else { '失敗' })
+                所要分   = [math]::Round($job.SW.Elapsed.TotalMinutes, 1)
+                理由     = $why
+                手がかり = ($hints -join ' / ')
+                ログ     = $job.Log
+                Hints    = $hints
             })
             [void]$running.Remove($job)
+            # ライセンスが無いと残りも必ず同じ理由で失敗するので、始めない
+            if (($why -eq $ReasonLicense) -and ($queue.Count -gt 0)) {
+                $script:NotStarted += $queue.Count
+                $queue.Clear()
+            }
         }
         $busy = if ($WaitAll) { $running.Count -gt 0 } else { $running.Count -ge $parallel }
         if ($busy) {
@@ -301,6 +361,7 @@ function Harvest {
 
 while ($queue.Count -gt 0) {
     Harvest
+    if ($queue.Count -eq 0) { break }   # ライセンスなしで残りを取りやめた場合
 
     $t   = $queue.Dequeue()
     $out = Join-Path $OutDir $t.Name
@@ -347,9 +408,36 @@ Write-Host "    失敗 : $($failList.Count) 件"
 Write-Host "    時間 : $(Format-Span $swAll.Elapsed.TotalMinutes)"
 Write-Host ''
 
-if ($failList.Count -gt 0) {
+$licList   = @($failList | Where-Object { $_.理由 -eq $ReasonLicense })
+$otherFail = @($failList | Where-Object { $_.理由 -ne $ReasonLicense })
+
+if ($licList.Count -gt 0) {
+    Bad '■ Unity Hub にログインできていません'
+    Write-Host ''
+    Write-Host '  Unity のライセンスが有効になっていないため、ビルドを始められませんでした。'
+    Write-Host '  作品やこのツールの問題ではありません。次の順に直してください。'
+    Write-Host ''
+    Write-Host '    1) Unity Hub を開いて、Unity のアカウントでログインする'
+    Write-Host '    2) Unity Hub の歯車（設定）→「ライセンス」で、'
+    Write-Host '       無料の Personal ライセンスを追加する'
+    Write-Host '    3) もう一度「1_ビルド開始」をダブルクリックする'
+    Write-Host ''
+    Write-Host '  この理由で失敗したもの:'
+    $licList | ForEach-Object { Write-Host "    ・$($_.作品名)" }
+    if ($script:NotStarted -gt 0) {
+        Write-Host "  （残りの $($script:NotStarted) 件は、同じ理由で失敗するので始めていません）"
+    }
+    Write-Host ''
+}
+
+if ($otherFail.Count -gt 0) {
     Warn '失敗したもの:'
-    $failList | ForEach-Object { Write-Host "    ・$($_.作品名)" }
+    foreach ($f in $otherFail) {
+        Write-Host ''
+        Write-Host "    ・$($f.作品名)"
+        Write-Host "        理由: $($f.理由)" -ForegroundColor Yellow
+        foreach ($h in $f.Hints) { Write-Host "        ログ: $h" -ForegroundColor DarkGray }
+    }
     Write-Host ''
     Write-Host '  もう一度このファイルを実行すると、失敗した分だけやり直します。'
     Write-Host '  それでもダメなら、次のフォルダのログを担当者に渡してください:'
@@ -358,7 +446,7 @@ if ($failList.Count -gt 0) {
 }
 
 try {
-    $results | Sort-Object 作品名 |
+    $results | Sort-Object 作品名 | Select-Object 作品名, 結果, 所要分, 理由, 手がかり, ログ |
         Export-Csv -Path (Join-Path $OutDir '結果一覧.csv') -NoTypeInformation -Encoding UTF8
 } catch { }
 
